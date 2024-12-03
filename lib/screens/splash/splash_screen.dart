@@ -4,7 +4,6 @@ import 'package:base_code_template_flutter/data/providers/auth_repository_provid
 import 'package:base_code_template_flutter/data/providers/shared_preference_repository_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../components/base_view/base_view.dart';
 import '../../components/loading/loading_view_model.dart';
 import '../../router/app_router.dart';
@@ -88,9 +87,7 @@ class _SplashViewState extends BaseViewState<SplashScreen, SplashViewModel> {
 
   @override
   SplashViewModel get viewModel => ref.read(_provider.notifier);
-
   LoadingStateViewModel get loading => ref.read(loadingStateProvider.notifier);
-
   @override
   String get screenName => SplashRoute.name;
 }

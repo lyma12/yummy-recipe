@@ -18,7 +18,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../components/base_view/base_view.dart';
 import '../../components/richtext/app_rich_text.dart';
 import '../../resources/gen/assets.gen.dart';

@@ -10,7 +10,6 @@ import 'package:base_code_template_flutter/utilities/exceptions/extension.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import '../../data/models/recipe/recipe.dart';
 
 abstract class DetailRecipeScreen extends BaseView {
@@ -35,7 +34,20 @@ abstract class DetailRecipeViewState
     });
   }
 
-  Future<void> onInitData();
+  Future<void> onInitData() async {
+    Object? error;
+    await loading.whileLoading(context, () async {
+      try {
+        await viewModel.initData(widget.recipe);
+      } catch (e) {
+        error = e;
+      }
+    });
+
+    if (error != null) {
+      handleError(error!);
+    }
+  }
 
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) => AppBar(
@@ -57,12 +69,13 @@ abstract class DetailRecipeViewState
 
   @override
   Widget buildBody(BuildContext context) {
-    return CustomScrollView(
+    return ContainerWithLoading(
+        child: CustomScrollView(
       slivers: [
         ...recipeView(),
         ...otherSliverView(),
       ],
-    );
+    ));
   }
 
   List<Widget> otherSliverView();
@@ -104,9 +117,8 @@ abstract class DetailRecipeViewState
   }
 
   Widget _getListTags() {
-    final recipe = state.recipe;
-    final tags = recipe != null ? recipe.getTag() : [];
-    return recipe != null
+    final tags = Utilities.getTagsRecipe(state.recipe);
+    return state.recipe != null
         ? SizedBox(
             height: 240,
             child: ListView.builder(
@@ -326,4 +338,7 @@ abstract class DetailRecipeViewState
   }
 
   DetailRecipeState get state;
+
+  LoadingStateViewModel get loading => ref.read(loadingStateProvider.notifier);
+
 }

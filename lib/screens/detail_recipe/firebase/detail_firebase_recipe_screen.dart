@@ -17,7 +17,6 @@ import 'package:base_code_template_flutter/utilities/constants/text_constants.da
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../data/providers/recipe_repository_provider.dart';
 import '../../../router/app_router.dart';
 
@@ -47,8 +46,6 @@ class DetailFirebaseRecipeScreen extends DetailRecipeScreen {
 class _DetailFirebaseRecipeViewState extends DetailRecipeViewState {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
-
-  @override
   DetailFirebaseRecipeViewModel get viewModel => ref.read(_provider.notifier);
 
   @override

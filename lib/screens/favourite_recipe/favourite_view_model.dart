@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:base_code_template_flutter/data/models/meal_plan/factory_request_meal_plan_day.dart';
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
 import 'package:base_code_template_flutter/data/models/user/spoonacular_account.dart';
@@ -10,7 +9,6 @@ import 'package:base_code_template_flutter/screens/meal_plan/calendar/calendar_s
 import 'package:base_code_template_flutter/screens/meal_plan/calendar/calendar_view_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../components/base_view/base_view_model.dart';
 import '../../components/internet/internet_provider.dart';
 import '../../data/models/meal_plan/meal_plan.dart';

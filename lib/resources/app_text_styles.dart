@@ -80,9 +80,6 @@ class AppTextStyles {
   static final titleSmallBold = titleSmall.copyWith(
     fontWeight: FontWeight.bold,
   );
-  static final titleSmallWhite = titleSmall.copyWith(
-    color: Colors.white,
-  );
   static final bodyMediumItalic = bodyMedium.copyWith(
     fontStyle: FontStyle.italic,
   );

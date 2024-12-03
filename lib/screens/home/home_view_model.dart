@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
 import 'package:base_code_template_flutter/data/repositories/api/session/session_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/api/spoonacular/spoonacular_repository.dart';
@@ -11,7 +10,6 @@ import 'package:base_code_template_flutter/utilities/exceptions/extension.dart';
 import 'package:base_code_template_flutter/utilities/utilities.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../components/base_view/base_view_model.dart';
 import '../../utilities/constants/firebae_recipe_field_name.dart';
 

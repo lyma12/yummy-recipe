@@ -2,6 +2,7 @@ import 'package:base_code_template_flutter/components/base_view/base_view_model.
 import 'package:base_code_template_flutter/data/models/user/user_firebase_profile.dart';
 import 'package:base_code_template_flutter/data/providers/user_provider.dart';
 import 'package:base_code_template_flutter/data/repositories/firebase/user_firebase_store_repository.dart';
+import 'package:base_code_template_flutter/data/providers/user_provider.dart';
 import 'package:base_code_template_flutter/data/repositories/signin/signin_repository.dart';
 import 'package:base_code_template_flutter/screens/login/login_state.dart';
 import 'package:base_code_template_flutter/utilities/utilities.dart';
@@ -74,6 +75,5 @@ class LoginViewModel extends BaseViewModel<LoginState> {
     }
     return await userProfileRepository.loadProfile(user.uid);
   }
-
   Future<void> forgetPassword(String email) async {}
 }

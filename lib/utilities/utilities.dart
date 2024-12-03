@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:base_code_template_flutter/components/chart/pie_chart.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/nutrition/nutrients.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipe.dart';
@@ -13,7 +12,6 @@ import 'package:base_code_template_flutter/utilities/exceptions/password_excepti
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../resources/gen/assets.gen.dart';
 import 'constants/firebase_user_profile_field_name.dart';
 import 'constants/text_constants.dart';
@@ -70,11 +68,9 @@ class Utilities {
 
   static String firebaseStorageRefImage(String id) =>
       "create/recipe/data/$id.png";
-
   static String firebaseStorageRefAvatar(String id) => "user/$id/avatar.png";
 
   static String firebaseStorageRefRootRecipe() => "create/recipe/data";
-
   static Map<String, dynamic> getIngredientsToFirebase(
       List<Ingredient> ingredient) {
     Map<String, dynamic> result = {};
@@ -84,7 +80,7 @@ class Utilities {
     return result;
   }
 
-  static Map<String, dynamic> getUserPeopleLikeToFirebase(
+  static Map<String, dynamic> getUserPeopleLikeToFirebse(
       List<UserFirebaseProfile> peopleLike) {
     Map<String, dynamic> result = {};
     for (var i in peopleLike) {

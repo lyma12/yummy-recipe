@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:base_code_template_flutter/data/models/api/responses/user_comment/recipe_comment.dart';
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
 import 'package:base_code_template_flutter/data/providers/favourite_recipe_provider.dart';

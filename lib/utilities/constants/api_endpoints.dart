@@ -10,7 +10,6 @@ class ApiEndpoints {
   static const String getNutritionInRecipe =
       '/recipes/{id}/nutritionWidget.json';
   static const String connectUser = '/users/connect';
-
   static const String getMealPlanWeek =
       '/mealplanner/{username}/week/{start-date}';
   static const String getMealPlanDay = '/mealplanner/{username}/day/{date}';

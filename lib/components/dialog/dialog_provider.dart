@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'error_dialog.dart';
 final alertDialogProvider = Provider<AlertDialog>((ref) => AlertDialog(ref));
 
 class AlertDialog {
@@ -25,12 +27,17 @@ class AlertDialog {
 
     _numberOfShowedAlertDialogs++;
     await showDialog(
-      context: context,
-      useRootNavigator: false,
-      barrierDismissible: barrierDismissible,
-      builder: (BuildContext context) {
-        return dialog;
-      },
-    );
+        context: context,
+        useRootNavigator: false,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return ErrorDialog(
+            title: title,
+            onClosed: () {
+              onClosed != null ? onClosed.call() : Navigator.of(context).pop();
+              _numberOfShowedAlertDialogs--;
+            },
+          );
+        },);
   }
 }
