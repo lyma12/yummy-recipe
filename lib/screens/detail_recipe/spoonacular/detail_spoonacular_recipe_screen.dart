@@ -100,6 +100,7 @@ class _DetailSpoonacularRecipeViewState extends DetailRecipeViewState {
   @override
   DetailSpoonacularRecipeState get state => ref.watch(_provider);
 
+  @override
   LoadingStateViewModel get loading => ref.watch(loadingStateProvider.notifier);
 
   @override

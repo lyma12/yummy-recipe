@@ -6,10 +6,12 @@ import 'package:base_code_template_flutter/resources/gen/colors.gen.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/components/recipe_icon_view.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_state.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_view_model.dart';
-import 'package:base_code_template_flutter/utilities/exceptions/extension.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:base_code_template_flutter/utilities/exceptions/extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../components/loading/container_with_loading.dart';
+import '../../components/loading/loading_view_model.dart';
 import '../../data/models/recipe/recipe.dart';
 
 abstract class DetailRecipeScreen extends BaseView {
@@ -117,7 +119,8 @@ abstract class DetailRecipeViewState
   }
 
   Widget _getListTags() {
-    final tags = Utilities.getTagsRecipe(state.recipe);
+    final recipe = state.recipe;
+    final tags = recipe?.getTag() ?? [];
     return state.recipe != null
         ? SizedBox(
             height: 240,
@@ -340,5 +343,4 @@ abstract class DetailRecipeViewState
   DetailRecipeState get state;
 
   LoadingStateViewModel get loading => ref.read(loadingStateProvider.notifier);
-
 }

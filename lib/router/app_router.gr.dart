@@ -28,9 +28,13 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     CalendarRoute.name: (routeData) {
+      final args = routeData.argsAs<CalendarRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const CalendarScreen(),
+        child: CalendarScreen(
+          key: args.key,
+          user: args.user,
+        ),
       );
     },
     CreateRoute.name: (routeData) {
@@ -131,6 +135,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MenuTabPage(),
       );
     },
+    NotificationRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const NotificationScreen(),
+      );
+    },
     ProfileSettingRoute.name: (routeData) {
       final args = routeData.argsAs<ProfileSettingRouteArgs>(
           orElse: () => const ProfileSettingRouteArgs());
@@ -219,16 +229,40 @@ class AccountTabRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [CalendarScreen]
-class CalendarRoute extends PageRouteInfo<void> {
-  const CalendarRoute({List<PageRouteInfo>? children})
-      : super(
+class CalendarRoute extends PageRouteInfo<CalendarRouteArgs> {
+  CalendarRoute({
+    Key? key,
+    required SpoonacularAccount user,
+    List<PageRouteInfo>? children,
+  }) : super(
           CalendarRoute.name,
+          args: CalendarRouteArgs(
+            key: key,
+            user: user,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'CalendarRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<CalendarRouteArgs> page =
+      PageInfo<CalendarRouteArgs>(name);
+}
+
+class CalendarRouteArgs {
+  const CalendarRouteArgs({
+    this.key,
+    required this.user,
+  });
+
+  final Key? key;
+
+  final SpoonacularAccount user;
+
+  @override
+  String toString() {
+    return 'CalendarRouteArgs{key: $key, user: $user}';
+  }
 }
 
 /// generated route for
@@ -487,6 +521,20 @@ class MenuTabRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'MenuTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [NotificationScreen]
+class NotificationRoute extends PageRouteInfo<void> {
+  const NotificationRoute({List<PageRouteInfo>? children})
+      : super(
+          NotificationRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'NotificationRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

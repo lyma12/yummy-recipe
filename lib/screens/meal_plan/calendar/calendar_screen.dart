@@ -242,7 +242,8 @@ class _CalendarViewState
               );
             },
             icon: const Icon(Icons.add),
-          ),IconButton(
+          ),
+          IconButton(
             onPressed: () async {
               await _updateShoppingList();
             },
@@ -272,9 +273,10 @@ class _CalendarViewState
     await ref.read(alertDialogProvider).showAlertDialog(
           context: context,
           dialog: SearchRecipeContainer(onSelect: (recipes, timeOfDate) async {
-            if(recipes != null){
-              await viewModel.addMealPlanDay(state.selectedDay ?? DateTime.now(), timeOfDate, recipes);
-              if(mounted){
+            if (recipes != null) {
+              await viewModel.addMealPlanDay(
+                  state.selectedDay ?? DateTime.now(), timeOfDate, recipes);
+              if (mounted) {
                 Navigator.of(context).pop();
               }
             }

@@ -1,6 +1,5 @@
 import 'package:base_code_template_flutter/components/base_view/base_view_model.dart';
 import 'package:base_code_template_flutter/data/repositories/shared_preference/shared_preference_repository.dart';
-import 'package:base_code_template_flutter/data/repositories/shared_preference/first_time_reposity.dart';
 import 'package:base_code_template_flutter/screens/first_time/first_time_state.dart';
 import 'package:base_code_template_flutter/utilities/constants/app_constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -17,7 +17,8 @@ class ApiEndpoints {
   static const String getShoppingList = '/mealplanner/{username}/shopping-list';
   static const String addShoppingList =
       '/mealplanner/{username}/shopping-list/items';
-  static const String generateShoppingList = '$getShoppingList/{start-date}/{end-date}';
+  static const String generateShoppingList =
+      '$getShoppingList/{start-date}/{end-date}';
   static const String deleteFromShoppingList = '$addShoppingList/{id}';
   static const String deleteFromMealPlan = '$addMealPlan/{id}';
 }

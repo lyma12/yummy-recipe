@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:base_code_template_flutter/components/paint/bnb_custom_paint.dart';
 import 'package:base_code_template_flutter/resources/gen/colors.gen.dart';
 import 'package:flutter/material.dart';
+
 import '../models/main_tab.dart';
 import 'tab_item.dart';
 

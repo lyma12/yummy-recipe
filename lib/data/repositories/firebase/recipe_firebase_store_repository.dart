@@ -73,8 +73,7 @@ class RecipeFirebaseStoreRepositoryImpl
 
   @override
   Future<List<Recipe>>? getRecipes(String title) async {
-    Query query = documentRef
-        .where('title', isEqualTo: title);
+    Query query = documentRef.where('title', isEqualTo: title);
     List<Recipe> response = [];
     await query.get().then(
       (querySnapshot) {

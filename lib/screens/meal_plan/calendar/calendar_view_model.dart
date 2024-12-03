@@ -35,6 +35,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
   final SecureStorageManager secureStorageManager;
   final HiveStorage hiveStorage;
   final RecipeFirebaseStoreRepository recipeFirebaseStoreRepository;
+
   bool get internetConnect => ref.watch(internetProvider);
   final nutritionSummaryType = [
     "Nutrition summary day",
@@ -121,18 +122,21 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
     );
   }
 
-  Future addMealPlanDay(DateTime date, int timeOfDate, List<Recipe> recipes) async {
+  Future addMealPlanDay(
+      DateTime date, int timeOfDate, List<Recipe> recipes) async {
     if (internetConnect) {
       if (userFirebase == null) throw SpoonacularConnectException();
       if (userFirebase != null) {
         List<RequestMealPlanDay> request = [];
-        for(var recipe in recipes){
+        for (var recipe in recipes) {
           RequestMealPlanDay planDay =
-          FactoryRequestMealPlanDay.factory(recipe, date, timeOfDate)
-              .getRequestMealPlanDay();
+              FactoryRequestMealPlanDay.factory(recipe, date, timeOfDate)
+                  .getRequestMealPlanDay();
           request.add(planDay);
         }
-        await spoonacularRepository.addMealPlansDay(userFirebase!, request).then((_) async {
+        await spoonacularRepository
+            .addMealPlansDay(userFirebase!, request)
+            .then((_) async {
           await getMealPlanDay(date, userFirebase!);
         });
       }
@@ -141,12 +145,13 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
           reason: 'internet error connect!', requestOptions: RequestOptions());
     }
   }
-  
+
   Future updateShoppingList(DateTime dateTime) async {
-    if(internetConnect){
-      if(userFirebase == null) throw SpoonacularConnectException();
-      await spoonacularRepository.generateShoppingList(userFirebase!, dateTime, dateTime);
-    }else {
+    if (internetConnect) {
+      if (userFirebase == null) throw SpoonacularConnectException();
+      await spoonacularRepository.generateShoppingList(
+          userFirebase!, dateTime, dateTime);
+    } else {
       throw DioException.connectionError(
           reason: 'internet error connect!', requestOptions: RequestOptions());
     }

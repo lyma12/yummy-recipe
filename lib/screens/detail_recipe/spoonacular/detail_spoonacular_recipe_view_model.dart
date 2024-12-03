@@ -25,6 +25,7 @@ class DetailSpoonacularRecipeViewModel
   List<Recipe> listRecipeHistory = [];
   List<Nutrition> listNutritionsInRecipeHistory = [];
   List<List<Recipe>> listSimilarHistory = [];
+
   @override
   Future<void> initData(Recipe recipe) async {
     await getNewRecipe(recipe.id as int);

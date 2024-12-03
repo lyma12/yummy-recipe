@@ -16,6 +16,7 @@ import '../screens/meal_plan/calendar/calendar_screen.dart';
 import '../screens/meal_plan/meal_plan_screen.dart';
 import '../screens/meal_plan/shopping_list/shopping_list_screen.dart';
 import '../screens/menu/menu_screen.dart';
+import '../screens/notification/notification_screen.dart';
 import '../screens/scraping_data/scraping_data_screen.dart';
 import '../screens/setting/profile/profile_setting_screen.dart';
 import '../screens/setting/queries/queries_setting_screen.dart';

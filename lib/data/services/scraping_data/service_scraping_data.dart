@@ -6,6 +6,7 @@ class ServiceScrapingData {
   final listWebCanScrapeData = [
     "https://www.dienmayxanh.com/vao-bep",
   ];
+
   Future<List<Recipe>> getRecipeByWeb(String url) async {
     if (url.contains("https://www.dienmayxanh.com/vao-bep")) {
       final webScraping = FactoryScrapingWeb.factory(WebType.dienMayXanh, url);
@@ -14,9 +15,10 @@ class ServiceScrapingData {
     }
     return [];
   }
+
   Future<bool> canScrape(String url) async {
-    for(var link in listWebCanScrapeData){
-      if(url.contains(link)){
+    for (var link in listWebCanScrapeData) {
+      if (url.contains(link)) {
         return true;
       }
     }

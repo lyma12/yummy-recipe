@@ -46,6 +46,8 @@ class DetailFirebaseRecipeScreen extends DetailRecipeScreen {
 class _DetailFirebaseRecipeViewState extends DetailRecipeViewState {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
+
+  @override
   DetailFirebaseRecipeViewModel get viewModel => ref.read(_provider.notifier);
 
   @override
@@ -54,6 +56,7 @@ class _DetailFirebaseRecipeViewState extends DetailRecipeViewState {
   @override
   DetailFirebaseRecipeState get state => ref.watch(_provider);
 
+  @override
   LoadingStateViewModel get loading => ref.watch(loadingStateProvider.notifier);
 
   @override

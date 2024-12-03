@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/scraping_data/service_scraping_data.dart';
 
 final scrapeDataProvider = Provider<ScrapingDataRepository>(
-      (ref) => MyScrapingDataTmpl(
+  (ref) => MyScrapingDataTmpl(
     service: ServiceScrapingData(),
   ),
 );

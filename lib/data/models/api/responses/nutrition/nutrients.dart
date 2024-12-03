@@ -2,6 +2,7 @@ import 'package:base_code_template_flutter/data/models/api/responses/spooncular/
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'nutrients.freezed.dart';
+
 part 'nutrients.g.dart';
 
 @freezed

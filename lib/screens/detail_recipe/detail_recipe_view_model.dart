@@ -35,5 +35,6 @@ abstract class DetailRecipeViewModel<T extends DetailRecipeState>
     final formattedText = _formatText(textWithoutTags);
     return formattedText;
   }
+
   void returnRecipeBefore();
 }

@@ -48,14 +48,15 @@ class SearchRecipeViewModel extends BaseViewModel<SearchRecipeState> {
       listRecipe: listRecipe,
     );
   }
-  void clear(){
+
+  void clear() {
     state = state.copyWith(
       selectRecipe: null,
       listRecipe: null,
     );
   }
 
-  void updateListSelectRecipe(Recipe recipe){
+  void updateListSelectRecipe(Recipe recipe) {
     state = state.copyWith(
       selectRecipe: [...?state.selectRecipe, recipe],
       listRecipe: null,

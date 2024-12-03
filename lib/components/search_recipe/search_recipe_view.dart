@@ -68,6 +68,7 @@ class SearchRecipeContainer extends ConsumerWidget {
     super.key,
     required this.onSelect,
   });
+
   final Function(List<Recipe>? recipes, int timeOfDate) onSelect;
 
   @override

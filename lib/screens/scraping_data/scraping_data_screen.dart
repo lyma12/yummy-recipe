@@ -23,8 +23,13 @@ final _provider =
 
 @RoutePage()
 class ScrapingDataScreen extends BaseView {
-  const ScrapingDataScreen({super.key, this.onSelectRecipe,});
+  const ScrapingDataScreen({
+    super.key,
+    this.onSelectRecipe,
+  });
+
   final Function(Recipe)? onSelectRecipe;
+
   @override
   BaseViewState<ScrapingDataScreen, ScrapingDataViewModel> createState() =>
       _ScrapingDataViewState();
@@ -33,10 +38,13 @@ class ScrapingDataScreen extends BaseView {
 class _ScrapingDataViewState
     extends BaseViewState<ScrapingDataScreen, ScrapingDataViewModel> {
   late Function(Recipe) onSelect;
-  @override void onInitState() {
+
+  @override
+  void onInitState() {
     super.onInitState();
-    onSelect = widget.onSelectRecipe ?? (_){};
+    onSelect = widget.onSelectRecipe ?? (_) {};
   }
+
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) => null;
 
@@ -78,7 +86,8 @@ class _ScrapingDataViewState
                     dialog: ScrapeDataDialog(
                         onSelect: (value) {
                           onSelect(value);
-                        }, listRecipe: value),
+                        },
+                        listRecipe: value),
                     barrierDismissible: true);
               }
             },

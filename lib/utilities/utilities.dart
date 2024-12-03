@@ -68,9 +68,11 @@ class Utilities {
 
   static String firebaseStorageRefImage(String id) =>
       "create/recipe/data/$id.png";
+
   static String firebaseStorageRefAvatar(String id) => "user/$id/avatar.png";
 
   static String firebaseStorageRefRootRecipe() => "create/recipe/data";
+
   static Map<String, dynamic> getIngredientsToFirebase(
       List<Ingredient> ingredient) {
     Map<String, dynamic> result = {};
@@ -80,7 +82,7 @@ class Utilities {
     return result;
   }
 
-  static Map<String, dynamic> getUserPeopleLikeToFirebse(
+  static Map<String, dynamic> getUserPeopleLikeToFirebase(
       List<UserFirebaseProfile> peopleLike) {
     Map<String, dynamic> result = {};
     for (var i in peopleLike) {

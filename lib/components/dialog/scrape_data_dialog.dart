@@ -42,7 +42,7 @@ class ListItemScrape extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(recipe.title ?? "No Title Available"),
-      onTap: (){
+      onTap: () {
         onSelect(recipe);
       },
     );

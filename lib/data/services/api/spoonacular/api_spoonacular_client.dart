@@ -103,11 +103,11 @@ abstract class ApiSpoonacularClient {
 
   @POST(ApiEndpoints.generateShoppingList)
   Future<ShoppingList> generateShoppingList(
-      @Path('username') String username,
-      @Query('hash') String hash,
-      @Path('start-date') String startDate,
-      @Path('end-date') String endDate,
-      );
+    @Path('username') String username,
+    @Query('hash') String hash,
+    @Path('start-date') String startDate,
+    @Path('end-date') String endDate,
+  );
 
   @DELETE(ApiEndpoints.deleteFromShoppingList)
   Future deleteFromShoppingList(

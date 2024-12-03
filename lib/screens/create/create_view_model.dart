@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:base_code_template_flutter/components/base_view/base_view_model.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipe.dart';
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
@@ -7,7 +8,6 @@ import 'package:base_code_template_flutter/data/repositories/api/session/session
 import 'package:base_code_template_flutter/data/repositories/api/spoonacular/spoonacular_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/firebase/firebase_storage_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/firebase/recipe_firebase_store_repository.dart';
-import 'package:base_code_template_flutter/data/repositories/firebase/firebase_store_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/signin/signin_repository.dart';
 import 'package:base_code_template_flutter/screens/create/create_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

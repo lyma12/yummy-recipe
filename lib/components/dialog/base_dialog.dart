@@ -37,7 +37,7 @@ abstract class BaseDialog extends StatelessWidget {
               const DividerHorizontal(height: 1),
               GestureDetector(
                 onTap: onClosed ??
-                        () {
+                    () {
                       Navigator.of(context).pop();
                     },
                 child: Container(

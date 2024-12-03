@@ -36,6 +36,7 @@ class SignupScreen extends BaseView {
 class SignupViewState extends BaseViewState<SignupScreen, SignupViewModel> {
   @override
   bool get resizeToAvoidBottomInset => true;
+
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) {
     return null;
@@ -163,8 +164,11 @@ class SignupViewState extends BaseViewState<SignupScreen, SignupViewModel> {
 
   @override
   String get screenName => "";
+
   SignupState get state => ref.watch(_provider);
+
   LoadingStateViewModel get loading => ref.read(loadingStateProvider.notifier);
+
   @override
   SignupViewModel get viewModel => ref.read(_provider.notifier);
 }

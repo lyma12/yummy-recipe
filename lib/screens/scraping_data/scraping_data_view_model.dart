@@ -5,13 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/recipe/recipe.dart';
 
-class ScrapingDataViewModel extends BaseViewModel<ScrapingDataState>{
+class ScrapingDataViewModel extends BaseViewModel<ScrapingDataState> {
   ScrapingDataViewModel({
     required this.ref,
     required this.scrapingDataRepository,
-}) : super(const ScrapingDataState());
+  }) : super(const ScrapingDataState());
   final Ref ref;
   final ScrapingDataRepository scrapingDataRepository;
+
   Future changeUrl(String url) async {
     final canScrape = await scrapingDataRepository.canScrapeData(url);
     state = state.copyWith(
@@ -19,6 +20,7 @@ class ScrapingDataViewModel extends BaseViewModel<ScrapingDataState>{
       canScraping: canScrape,
     );
   }
+
   Future<List<Recipe>> scrapeDataRecipe() async {
     return await scrapingDataRepository.scrapeData(state.url);
   }

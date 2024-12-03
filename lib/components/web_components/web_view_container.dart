@@ -19,9 +19,10 @@ class _WebViewContainerState extends State<WebViewContainer> {
   var loadingPercentage = 0;
   late final WebViewController controller;
   late ValueChanged<String> onUrlChanged;
+
   @override
   void initState() {
-    onUrlChanged = widget.onUrlChanged ?? (_){};
+    onUrlChanged = widget.onUrlChanged ?? (_) {};
     super.initState();
     controller = WebViewController()
       ..setNavigationDelegate(NavigationDelegate(
@@ -51,6 +52,7 @@ class _WebViewContainerState extends State<WebViewContainer> {
       ))
       ..loadRequest(Uri.parse(widget.uri));
   }
+
   Future<void> _goBack() async {
     if (await controller.canGoBack()) {
       await controller.goBack();
