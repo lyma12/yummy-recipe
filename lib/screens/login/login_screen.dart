@@ -3,6 +3,7 @@ import 'package:base_code_template_flutter/common/my_flutter_app_icons.dart';
 import 'package:base_code_template_flutter/components/base_view/base_view.dart';
 import 'package:base_code_template_flutter/components/loading/container_with_loading.dart';
 import 'package:base_code_template_flutter/data/providers/auth_repository_provider.dart';
+import 'package:base_code_template_flutter/data/providers/user_provider.dart';
 import 'package:base_code_template_flutter/resources/gen/assets.gen.dart';
 import 'package:base_code_template_flutter/router/app_router.dart';
 import 'package:base_code_template_flutter/screens/login/components/input_icon.dart';
@@ -18,12 +19,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../components/loading/loading_view_model.dart';
+
 final _provider = StateNotifierProvider.autoDispose<LoginViewModel, LoginState>(
-    (ref) => LoginViewModel(
-        ref: ref,
-        facebookAuth: ref.watch(facebookSigninRepositoryProvider),
-        firebaseAuth: ref.watch(firebaseAuthRepositoryProvider),
-        googleAuth: ref.watch(googleSigninRepositoryProvider)));
+  (ref) => LoginViewModel(
+    ref: ref,
+    facebookAuth: ref.read(facebookSigninRepositoryProvider),
+    firebaseAuth: ref.read(firebaseAuthRepositoryProvider),
+    googleAuth: ref.read(googleSigninRepositoryProvider),
+    userProfileRepository: ref.read(userProfileProvider),
+  ),
+);
 
 @RoutePage()
 class LoginScreen extends BaseView {
@@ -35,8 +41,11 @@ class LoginScreen extends BaseView {
 
 class _LoginViewState extends BaseViewState<LoginScreen, LoginViewModel> {
   @override
+  bool get resizeToAvoidBottomInset => true;
+
+  @override
   Widget buildBody(BuildContext context) {
-    if (state.user != null) AutoRouter.of(context).replace(const HomeRoute());
+    if (state.user != null) _checkFirstCreateAccount();
     return ContainerWithLoading(
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -88,25 +97,7 @@ class _LoginViewState extends BaseViewState<LoginScreen, LoginViewModel> {
                       horizontal: 16,
                     ),
                     child: ElevatedButton(
-                      onPressed: () {
-                        viewModel
-                            .signinGmailPassword(state.email, state.password)
-                            .then((onValue) {}, onError: (error) {
-                          if (error is FirebaseAuthException) {
-                            if (error.code == 'user-not-found') {
-                              viewModel.setEmailException(error.message!);
-                            } else if (error.code == 'wrong-password') {
-                              viewModel.setPasswordException(error.message!);
-                            } else {
-                              viewModel.setEmailException(error.message!);
-                            }
-                          } else if (error is EmailException) {
-                            viewModel.setEmailException(error.message);
-                          } else if (error is PasswordException) {
-                            viewModel.setPasswordException(error.message);
-                          }
-                        });
-                      },
+                      onPressed: () async => await signInByGmailPassword(),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 15,
@@ -128,13 +119,7 @@ class _LoginViewState extends BaseViewState<LoginScreen, LoginViewModel> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          onPressed: () async {
-                            await viewModel.signinByFacebookAuth().catchError(
-                              (error) {
-                                handleError(error);
-                              },
-                            );
-                          },
+                          onPressed: () async => await signInByFacebook(),
                           label: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             child: Text(
@@ -158,13 +143,7 @@ class _LoginViewState extends BaseViewState<LoginScreen, LoginViewModel> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          onPressed: () async {
-                            await viewModel
-                                .siginByGoogleAuth()
-                                .catchError((error) {
-                              handleError(error);
-                            });
-                          },
+                          onPressed: () async => signInByGoogle,
                           label: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             child: Text(
@@ -225,6 +204,76 @@ class _LoginViewState extends BaseViewState<LoginScreen, LoginViewModel> {
   }
 
   @override
+  Future<void> onInitState() async {
+    super.onInitState();
+    await loading.whileLoading(context, () async {
+      viewModel.initData();
+    });
+  }
+
+  Future<void> signInByFacebook() async {
+    await loading.whileLoading(context, () async {
+      await viewModel.signInByFacebookAuth().then((value) async {
+        await _checkFirstCreateAccount();
+      }).catchError(
+        (error) {
+          handleError(error);
+        },
+      );
+    });
+  }
+
+  Future<void> signInByGoogle() async {
+    await loading.whileLoading(context, () async {
+      await viewModel.sigInByGoogleAuth().then((value) async {
+        await _checkFirstCreateAccount();
+      }).catchError((error) {
+        handleError(error);
+      });
+    });
+  }
+
+  Future<void> signInByGmailPassword() async {
+    await loading.whileLoading(context, () async {
+      viewModel.signInGmailPassword(state.email, state.password).then(
+          (onValue) async {
+        await _checkFirstCreateAccount();
+      }, onError: (error) {
+        if (error is FirebaseAuthException) {
+          if (error.code == 'user-not-found') {
+            viewModel.setEmailException(error.message!);
+          } else if (error.code == 'wrong-password') {
+            viewModel.setPasswordException(error.message!);
+          } else {
+            viewModel.setEmailException(error.message!);
+          }
+        } else if (error is EmailException) {
+          viewModel.setEmailException(error.message);
+        } else if (error is PasswordException) {
+          viewModel.setPasswordException(error.message);
+        }
+      });
+    });
+  }
+
+  Future<void> _checkFirstCreateAccount() async {
+    final profile = await viewModel.getProfile();
+    if (mounted) {
+      if (profile != null) {
+        AutoRouter.of(context).replace(const HomeRoute());
+      } else {
+        AutoRouter.of(context).replace(
+          ProfileSettingRoute(
+            nextRoute: QueriesSettingRoute(
+              nextRoute: const MainRoute(),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  @override
   PreferredSizeWidget? buildAppBar(BuildContext context) {
     return null;
   }
@@ -233,6 +282,8 @@ class _LoginViewState extends BaseViewState<LoginScreen, LoginViewModel> {
   String get screenName => LoginRoute.name;
 
   LoginState get state => ref.watch(_provider);
+
+  LoadingStateViewModel get loading => ref.read(loadingStateProvider.notifier);
 
   @override
   LoginViewModel get viewModel => ref.read(_provider.notifier);

@@ -1,8 +1,7 @@
-import 'package:base_code_template_flutter/components/loading/icon_animation_view.dart';
-import 'package:base_code_template_flutter/resources/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:base_code_template_flutter/components/loading/icon_animation_view.dart';
+import 'package:base_code_template_flutter/resources/app_text_styles.dart';
 import '../paint/loading_paint.dart';
 import 'loading_view_model.dart';
 

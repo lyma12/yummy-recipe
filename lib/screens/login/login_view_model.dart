@@ -1,26 +1,28 @@
 import 'package:base_code_template_flutter/components/base_view/base_view_model.dart';
+import 'package:base_code_template_flutter/data/models/user/user_firebase_profile.dart';
 import 'package:base_code_template_flutter/data/providers/user_provider.dart';
+import 'package:base_code_template_flutter/data/repositories/firebase/user_firebase_store_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/signin/signin_repository.dart';
 import 'package:base_code_template_flutter/screens/login/login_state.dart';
 import 'package:base_code_template_flutter/utilities/utilities.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginViewModel extends BaseViewModel<LoginState> {
-  LoginViewModel(
-      {required this.ref,
-      required this.facebookAuth,
-      required this.firebaseAuth,
-      required this.googleAuth})
-      : super(const LoginState()) {
-    _initData();
-  }
+  LoginViewModel({
+    required this.ref,
+    required this.facebookAuth,
+    required this.firebaseAuth,
+    required this.googleAuth,
+    required this.userProfileRepository,
+  }) : super(const LoginState());
 
   final Ref ref;
-  final SigninRepository facebookAuth;
-  final SigninRepository googleAuth;
+  final SignInRepository facebookAuth;
+  final SignInRepository googleAuth;
   final AuthRepository firebaseAuth;
+  final UserProfileRepository userProfileRepository;
 
-  void _initData() {
+  void initData() {
     ref.listen(userProvider, (previous, next) {
       state = state.copyWith(user: next.value);
     });
@@ -51,18 +53,26 @@ class LoginViewModel extends BaseViewModel<LoginState> {
     );
   }
 
-  Future<void> signinByFacebookAuth() async {
-    await facebookAuth.signin();
+  Future<void> signInByFacebookAuth() async {
+    await facebookAuth.signIn();
   }
 
-  Future<void> siginByGoogleAuth() async {
-    await googleAuth.signin();
+  Future<void> sigInByGoogleAuth() async {
+    await googleAuth.signIn();
   }
 
-  Future<void> signinGmailPassword(String? email, String? password) async {
+  Future<void> signInGmailPassword(String? email, String? password) async {
     if (Utilities.checkEmail(email) && Utilities.checkPassword(password)) {
-      await firebaseAuth.signin(email!, password!);
+      await firebaseAuth.signIn(email!, password!);
     }
+  }
+
+  Future<UserFirebaseProfile?> getProfile() async {
+    final user = state.user;
+    if (user == null) {
+      return null;
+    }
+    return await userProfileRepository.loadProfile(user.uid);
   }
 
   Future<void> forgetPassword(String email) async {}

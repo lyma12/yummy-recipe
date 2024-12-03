@@ -4,7 +4,7 @@ import 'package:base_code_template_flutter/components/richtext/app_rich_text.dar
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
 import 'package:base_code_template_flutter/resources/app_text_styles.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/components/recipe_icon_view.dart';
-import 'package:base_code_template_flutter/utilities/utilities.dart';
+import 'package:base_code_template_flutter/utilities/exceptions/extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -69,7 +69,7 @@ class ResultAnalyzeRecipe extends StatelessWidget {
   }
 
   Widget _getListTags() {
-    final tags = Utilities.getTagsRecipe(recipe);
+    final tags = recipe.getTag();
     return SizedBox(
       height: 60,
       child: ListView.builder(

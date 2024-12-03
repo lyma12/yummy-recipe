@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipe.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipes_random_response.dart';
+import 'package:base_code_template_flutter/data/models/queries/queries.dart';
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
 import 'package:hive/hive.dart';
 
@@ -13,6 +14,8 @@ class HiveStorage {
   static const _recipesRandomResponse = 'recipesRandomResponse';
   static const _similarRecipes = 'similarRecipes';
   static const _recipeDataSave = 'recipe_save';
+  static const _queries = 'queries';
+  static const _deleteShoppingItem = 'deleteShoppingItem';
 
   static const maxTimeStamp = 5;
   static const maxNumberInStorage = 10;
@@ -133,5 +136,45 @@ class HiveStorage {
       return null;
     }
     return response.results;
+  }
+
+  Future<void> saveQueries(Queries queries) async {
+    var box = await Hive.openBox<Queries>(_queries);
+    box.put(_queries, queries);
+  }
+
+  Future<Queries?> readQueries() async {
+    var box = await Hive.openBox<Queries>(_queries);
+    return box.get(_queries);
+  }
+
+  Future saveDeleteShoppingList(int id, String aisleKey) async {
+    var box = await Hive.openBox<String>(_deleteShoppingItem);
+    box.put(id, aisleKey);
+  }
+
+  Future<Map<int, String>> readDeleteShoppingList() async {
+    var box = await Hive.openBox<String>(_deleteShoppingItem);
+    final Map<int, String> shoppingList = {};
+    for (var key in box.keys) {
+      if (key != null) {
+        shoppingList[key] = box.get(key) ?? "";
+      }
+    }
+    return shoppingList;
+  }
+
+  Future<void> clearDataAccount() async {
+    await Future.wait([
+      _clearBox<Recipe>(_recipeDataSave),
+      _clearBox<Queries>(_queries),
+      _clearBox<RecipesRandomResponse>(_recipesRandomResponse),
+      _clearBox<String>(_deleteShoppingItem),
+    ]);
+  }
+
+  Future _clearBox<T>(String nameBox) async {
+    var box = await Hive.openBox<T>(nameBox);
+    box.clear();
   }
 }

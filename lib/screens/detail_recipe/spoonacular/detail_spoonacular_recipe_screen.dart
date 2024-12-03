@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:base_code_template_flutter/components/chart/pie_chart.dart';
+import 'package:base_code_template_flutter/components/loading/loading_view_model.dart';
 import 'package:base_code_template_flutter/components/loading_view_with_animation/shimmer_widget.dart';
 import 'package:base_code_template_flutter/data/providers/favourite_recipe_provider.dart';
 import 'package:base_code_template_flutter/data/providers/hive_storage_provider.dart';
+import 'package:base_code_template_flutter/data/providers/recipe_repository_provider.dart';
 import 'package:base_code_template_flutter/data/providers/session_repository_provider.dart';
-import 'package:base_code_template_flutter/data/providers/spoonacular_repository_provider.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/components/similar_recipe_view.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_screen.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_state.dart';
@@ -20,7 +21,7 @@ final _provider = StateNotifierProvider.autoDispose<
     DetailSpoonacularRecipeViewModel, DetailSpoonacularRecipeState>(
   (ref) => DetailSpoonacularRecipeViewModel(
     ref: ref,
-    spoonacularRepository: ref.watch(spoonacularRepositoryProvider),
+    spoonacularRepository: ref.watch(recipeSpoonacularRepositoryProvider),
     sessionRepository: ref.watch(sessionRepositoryProvider),
     hiveStorage: ref.watch(hiveStorageProvider),
     favouriteRecipeProvider: ref.read(favouriteRecipeProvider.notifier),
@@ -38,24 +39,6 @@ class DetailSpoonacularRecipeScreen extends DetailRecipeScreen {
 }
 
 class _DetailSpoonacularRecipeViewState extends DetailRecipeViewState {
-  @override
-  PreferredSizeWidget? buildAppBar(BuildContext context) => AppBar(
-        title:
-            state.recipe != null ? Text(state.recipe?.title ?? "Recipe") : null,
-        actions: [
-          IconButton(
-              onPressed: () async {
-                if (state.recipe != null) {
-                  await viewModel.saveRecipeInLocalStorage(state.recipe!);
-                }
-              },
-              icon: Icon(
-                Icons.download,
-                color: Theme.of(context).colorScheme.primary,
-              ))
-        ],
-      );
-
   Widget? _chartCaloricBreakdown() {
     final stateNutrition = state.nutrition;
     return stateNutrition != null
@@ -92,6 +75,22 @@ class _DetailSpoonacularRecipeViewState extends DetailRecipeViewState {
   }
 
   @override
+  Future<void> onInitData() async {
+    Object? error;
+    await loading.whileLoading(context, () async {
+      try {
+        await viewModel.initData(widget.recipe);
+      } catch (e) {
+        error = e;
+      }
+    });
+
+    if (error != null) {
+      handleError(error!);
+    }
+  }
+
+  @override
   DetailSpoonacularRecipeViewModel get viewModel =>
       ref.read(_provider.notifier);
 
@@ -100,6 +99,9 @@ class _DetailSpoonacularRecipeViewState extends DetailRecipeViewState {
 
   @override
   DetailSpoonacularRecipeState get state => ref.watch(_provider);
+
+  @override
+  LoadingStateViewModel get loading => ref.watch(loadingStateProvider.notifier);
 
   @override
   List<Widget> otherSliverView() {

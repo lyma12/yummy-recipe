@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:base_code_template_flutter/components/base_view/base_view.dart';
-import 'package:base_code_template_flutter/data/providers/first_time_reposity_provider.dart';
+import 'package:base_code_template_flutter/data/providers/shared_preference_repository_provider.dart';
 import 'package:base_code_template_flutter/resources/gen/assets.gen.dart';
 import 'package:base_code_template_flutter/router/app_router.dart';
 import 'package:base_code_template_flutter/screens/first_time/components/dash_board_page_view.dart';
@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final _provider =
     StateNotifierProvider.autoDispose<FirstTimeModel, FirstTimeState>(
   (ref) => FirstTimeModel(
-      ref: ref, firstTimeReposity: ref.watch(firstTimeReposityProvider)),
+      ref: ref, firstTimeRepository: ref.watch(firstTimeRepositoryProvider)),
 );
 
 @RoutePage()

@@ -76,38 +76,38 @@ extension MainTabExtension on MainTab {
   Widget activeIconPath(BuildContext context) {
     switch (this) {
       case MainTab.home:
-        return const Expanded(
+        return Expanded(
           child: Icon(
             MyFlutterApp.home,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
           ),
         );
       case MainTab.cart:
-        return const Expanded(
+        return Expanded(
           child: Icon(
             MyFlutterApp.cart,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
           ),
         );
       case MainTab.daily:
-        return const Expanded(
+        return Expanded(
           child: Icon(
             MyFlutterApp.pencil,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
           ),
         );
       case MainTab.loveList:
-        return const Expanded(
+        return Expanded(
           child: Icon(
             MyFlutterApp.love,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
           ),
         );
       case MainTab.account:
-        return const Expanded(
+        return Expanded(
           child: Icon(
             MyFlutterApp.account,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
           ),
         );
     }

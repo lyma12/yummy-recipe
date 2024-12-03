@@ -3,10 +3,9 @@ import 'package:base_code_template_flutter/components/divider/divider_horizontal
 import 'package:base_code_template_flutter/components/loading/container_with_loading.dart';
 import 'package:base_code_template_flutter/components/loading/loading_view_model.dart';
 import 'package:base_code_template_flutter/data/providers/auth_repository_provider.dart';
-import 'package:base_code_template_flutter/data/providers/firebase_store_provider.dart';
 import 'package:base_code_template_flutter/data/providers/hive_storage_provider.dart';
+import 'package:base_code_template_flutter/data/providers/recipe_repository_provider.dart';
 import 'package:base_code_template_flutter/data/providers/session_repository_provider.dart';
-import 'package:base_code_template_flutter/data/providers/spoonacular_repository_provider.dart';
 import 'package:base_code_template_flutter/resources/app_text_styles.dart';
 import 'package:base_code_template_flutter/resources/gen/assets.gen.dart';
 import 'package:base_code_template_flutter/screens/home/components/item_recipe_view.dart';
@@ -23,11 +22,11 @@ import 'home_view_model.dart';
 
 final _provider = StateNotifierProvider.autoDispose<HomeViewModel, HomeState>(
   (ref) => HomeViewModel(
-    firebaseStoreResposity: ref.watch(firebaseStoreRepositoryProvider),
+    firebaseStoreResposity: ref.watch(recipeFirebaseRepositoryProvider),
     auth: ref.read(firebaseAuthRepositoryProvider),
     ref: ref,
     sessionRepository: ref.watch(sessionRepositoryProvider),
-    spoonacularRepository: ref.watch(spoonacularRepositoryProvider),
+    spoonacularRepository: ref.watch(recipeSpoonacularRepositoryProvider),
     hiveStorage: ref.watch(hiveStorageProvider),
   ),
 );
@@ -136,7 +135,6 @@ class _HomeViewState extends BaseViewState<HomeScreen, HomeViewModel> {
                     color: Colors.white,
                   ))
             ],
-            //toolbarHeight: ,
           ),
           SliverToBoxAdapter(
             child: _buildRecipeListData(),

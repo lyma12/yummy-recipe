@@ -1,8 +1,15 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:base_code_template_flutter/components/dialog/create_meal_plan_dialog.dart';
+import 'package:base_code_template_flutter/components/dialog/dialog_provider.dart';
 import 'package:base_code_template_flutter/components/divider/divider_horizontal.dart';
+import 'package:base_code_template_flutter/components/loading/loading_view_model.dart';
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
+import 'package:base_code_template_flutter/data/providers/auth_repository_provider.dart';
 import 'package:base_code_template_flutter/data/providers/favourite_recipe_provider.dart';
 import 'package:base_code_template_flutter/data/providers/hive_storage_provider.dart';
+import 'package:base_code_template_flutter/data/providers/recipe_repository_provider.dart';
+import 'package:base_code_template_flutter/data/providers/secure_storage_provider.dart';
+import 'package:base_code_template_flutter/data/providers/user_provider.dart';
 import 'package:base_code_template_flutter/resources/app_text_styles.dart';
 import 'package:base_code_template_flutter/screens/favourite_recipe/components/item_favourite.dart';
 import 'package:base_code_template_flutter/screens/favourite_recipe/favourite_state.dart';
@@ -11,7 +18,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../components/base_view/base_view.dart';
 import '../../components/richtext/app_rich_text.dart';
 import '../../resources/gen/assets.gen.dart';
@@ -22,9 +28,14 @@ import 'favourite_view_model.dart';
 final _provider =
     StateNotifierProvider.autoDispose<FavouriteViewModel, FavouriteState>(
   (ref) => FavouriteViewModel(
-      hiveStorage: ref.read(hiveStorageProvider),
-      favouriteRecipeNotifier: ref.read(favouriteRecipeProvider.notifier),
-      ref: ref),
+    hiveStorage: ref.read(hiveStorageProvider),
+    favouriteRecipeNotifier: ref.read(favouriteRecipeProvider.notifier),
+    ref: ref,
+    spoonacularRepository: ref.read(recipeSpoonacularRepositoryProvider),
+    firebaseAuth: ref.read(firebaseAuthRepositoryProvider),
+    secureStorageManager: ref.read(secureStorageProvider),
+    userFirebaseRepository: ref.read(userProfileProvider),
+  ),
 );
 
 /// Screen code: A_06
@@ -145,38 +156,44 @@ class _FavouriteViewState
             itemCount: listRecipeFavourite.length,
             itemBuilder: (context, index) {
               final recipe = listRecipeFavourite[index];
-              return ListTile(
-                leading: CachedNetworkImage(
-                  width: 120,
-                  height: 500,
-                  imageUrl: recipe.image ?? "",
-                  fit: BoxFit.cover,
-                  errorWidget: (context, url, error) => Assets
-                      .images.signinBackGround
-                      .image(fit: BoxFit.cover, width: 120, height: 500),
-                ),
-                title: Text(
-                  recipe.title ?? "",
-                  style: AppTextStyles.titleMediumBold,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      Utilities.formatDateTime(
-                          recipe.timeStamp ?? DateTime.now()),
-                      style: AppTextStyles.bodySmall,
-                    ),
-                    AppRichText.richTextIconText(
+              return Dismissible(
+                key: Key((listRecipeFavourite[index].id).toString()),
+                onDismissed: (value) {
+                  // remove favourite
+                },
+                child: ListTile(
+                  leading: CachedNetworkImage(
+                    width: 120,
+                    height: 500,
+                    imageUrl: recipe.image ?? "",
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) => Assets
+                        .images.signinBackGround
+                        .image(fit: BoxFit.cover, width: 120, height: 500),
+                  ),
+                  title: Text(
+                    recipe.title ?? "",
+                    style: AppTextStyles.titleMediumBold,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        Utilities.formatDateTime(
+                            recipe.timeStamp ?? DateTime.now()),
+                        style: AppTextStyles.bodySmall,
+                      ),
+                      AppRichText.richTextIconText(
                         data: recipe.servings.toString(),
                         name: AppLocalizations.of(context)?.serving,
                         icon: const Icon(
                           Icons.person,
                           size: 12,
-                        )),
-                    AppRichText.richTextIconText(
+                        ),
+                      ),
+                      AppRichText.richTextIconText(
                         data: (recipe.spoonacularScore ?? 0)
                             .roundToDouble()
                             .toString(),
@@ -184,12 +201,20 @@ class _FavouriteViewState
                         icon: const Icon(
                           Icons.star,
                           size: 12,
-                        ))
-                  ],
+                        ),
+                      )
+                    ],
+                  ),
+                  trailing: IconButton(
+                      onPressed: () async {
+                        await showCreateMealPlanDialog(recipe);
+                      },
+                      icon: const Icon(Icons.add)),
+                  onTap: () => gotoDetailRecipe(recipe),
                 ),
-                onTap: () => gotoDetailRecipe(recipe),
               );
-            })
+            },
+          )
         : SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -201,6 +226,46 @@ class _FavouriteViewState
             ),
           );
   }
+
+  Future showCreateMealPlanDialog(Recipe recipe) async {
+    await ref.read(alertDialogProvider).showAlertDialog(
+          context: context,
+          dialog: CreateMealPlanDialog(
+            onSubmit: (date, timeOfDay) async {
+              await _addToMealPlan(date, timeOfDay, recipe);
+            },
+            nameRecipe: recipe.title ?? "no name",
+          ),
+          barrierDismissible: true,
+        );
+  }
+
+  Future<void> _addToMealPlan(
+      DateTime date, int timeOfDay, Recipe recipe) async {
+    Object? error;
+    await loading.whileLoading(
+      context,
+      () async {
+        try {
+          await viewModel.addMealPlanDay(date, timeOfDay, recipe).then(
+            (_) {
+              if (mounted) {
+                Navigator.of(context).pop();
+              }
+            },
+          );
+        } catch (e) {
+          error = e;
+        }
+      },
+    );
+
+    if (error != null) {
+      handleError(error!);
+    }
+  }
+
+  LoadingStateViewModel get loading => ref.read(loadingStateProvider.notifier);
 
   FavouriteState get state => ref.watch(_provider);
 

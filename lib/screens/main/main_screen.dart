@@ -34,10 +34,10 @@ class _MainViewState extends BaseViewState<MainScreen, MainViewModel> {
     return AutoTabsScaffold(
       routes: const [
         HomeTabRoute(),
-        CalendarTabRoute(),
+        MealPlanTabRoute(),
         CreateTabRoute(),
         FavouriteTabRoute(),
-        NotificationTabRoute(),
+        AccountTabRoute(),
       ],
       animationDuration: const Duration(milliseconds: 150),
       transitionBuilder: (context, child, animation) {

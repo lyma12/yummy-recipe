@@ -5,8 +5,8 @@ import 'package:base_code_template_flutter/components/file_picker/image_form_gal
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipe.dart';
 import 'package:base_code_template_flutter/data/providers/auth_repository_provider.dart';
 import 'package:base_code_template_flutter/data/providers/firebase_store_provider.dart';
+import 'package:base_code_template_flutter/data/providers/recipe_repository_provider.dart';
 import 'package:base_code_template_flutter/data/providers/session_repository_provider.dart';
-import 'package:base_code_template_flutter/data/providers/spoonacular_repository_provider.dart';
 import 'package:base_code_template_flutter/resources/app_text_styles.dart';
 import 'package:base_code_template_flutter/resources/gen/colors.gen.dart';
 import 'package:base_code_template_flutter/router/app_router.dart';
@@ -19,16 +19,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final _provider = StateNotifierProvider
-    .autoDispose<CreateViewModel, CreateState>((ref) => CreateViewModel(
-          ref: ref,
-          spoonacularRepository: ref.read(spoonacularRepositoryProvider),
-          sessionRepository: ref.read(sessionRepositoryProvider),
-          firebaseStorageRepository:
-              ref.read(firebaseStorageRepositoryProvider),
-          firebaseStoreRespository: ref.read(firebaseStoreRepositoryProvider),
-          authRepository: ref.watch(firebaseAuthRepositoryProvider),
-        ));
+final _provider =
+    StateNotifierProvider.autoDispose<CreateViewModel, CreateState>(
+  (ref) => CreateViewModel(
+    ref: ref,
+    spoonacularRepository: ref.read(recipeSpoonacularRepositoryProvider),
+    sessionRepository: ref.read(sessionRepositoryProvider),
+    firebaseStorageRepository: ref.read(firebaseStorageRepositoryProvider),
+    firebaseStoreRespository: ref.read(recipeFirebaseRepositoryProvider),
+    authRepository: ref.watch(firebaseAuthRepositoryProvider),
+  ),
+);
 
 @RoutePage()
 class CreateScreen extends BaseView {

@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 
 abstract class FirebaseStorageRepository {
   Future<String> saveRecipe(String id, File? image);
+
+  Future<String> saveAvatar(String userId, File image);
 }
 
 class FirebaseStorageRepositoryImpl implements FirebaseStorageRepository {
@@ -31,6 +33,28 @@ class FirebaseStorageRepositoryImpl implements FirebaseStorageRepository {
         print("Image uploaded successfully.");
       }
       return await recipeRef.getDownloadURL();
+    } catch (e) {
+      if (kDebugMode) {
+        print("Failed to upload image: $e");
+      }
+      throw Exception("Failed to upload image: $e");
+    }
+  }
+
+  @override
+  Future<String> saveAvatar(String userId, File image) async {
+    if (kDebugMode) {
+      print(userId);
+    }
+    final avatarRef =
+        _storageRef.child(Utilities.firebaseStorageRefAvatar(userId));
+    final data = await image.readAsBytes();
+    try {
+      await avatarRef.putData(data);
+      if (kDebugMode) {
+        print("Image uploaded successfully.");
+      }
+      return await avatarRef.getDownloadURL();
     } catch (e) {
       if (kDebugMode) {
         print("Failed to upload image: $e");

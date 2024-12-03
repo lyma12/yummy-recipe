@@ -1,11 +1,11 @@
 import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:base_code_template_flutter/components/dialog/error_dialog.dart';
+import 'package:base_code_template_flutter/utilities/exceptions/spoonacular_exception.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-
 import '../../data/models/api/responses/base_response_error/base_response_error.dart';
 import '../dialog/dialog_provider.dart';
 import 'base_view_mixin.dart';
@@ -73,16 +73,25 @@ abstract class BaseViewState<View extends BaseView,
         } catch (_) {
           errorMessage = error.response?.statusMessage;
         }
+      } else if (error.type == DioExceptionType.connectionError) {
+        errorMessage = error.message;
       }
-    } else if (error is FirebaseException) {
-      errorMessage = "${error.code}: ${error.message}";
+    }
+    if (error is SpoonacularException) {
+      errorMessage = error.message;
+    }
+
+    if (error is FirebaseAuthException) {
+      errorMessage = error.message;
     }
 
     if (errorMessage != null) {
       await ref.read(alertDialogProvider).showAlertDialog(
             context: context,
-            title: errorMessage,
-            onClosed: onButtonTapped,
+            dialog: ErrorDialog(
+              title: errorMessage,
+              onClosed: onButtonTapped,
+            ),
           );
     }
   }

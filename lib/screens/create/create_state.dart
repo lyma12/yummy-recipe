@@ -9,12 +9,12 @@ part 'create_state.freezed.dart';
 @freezed
 class CreateState with _$CreateState {
   const factory CreateState({
-    @Default(null) Recipe? recipe,
+    Recipe? recipe,
     @Default(false) bool createRecipe,
     @Default([]) List<Ingredient>? listIngredient,
     @Default([]) List<Ingredient>? listIngredientComplete,
     @Default(false) bool isUpload,
-    @Default(null) File? imageData,
+    File? imageData,
   }) = _CreateState;
 
   const CreateState._();

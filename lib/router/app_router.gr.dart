@@ -15,16 +15,26 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
-    CalendarRoute.name: (routeData) {
+    AccountRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const CalendarScreen(),
+        child: const AccountScreen(),
       );
     },
-    CalendarTabRoute.name: (routeData) {
+    AccountTabRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const CalendarTabPage(),
+        child: const AccountTabPage(),
+      );
+    },
+    CalendarRoute.name: (routeData) {
+      final args = routeData.argsAs<CalendarRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CalendarScreen(
+          key: args.key,
+          user: args.user,
+        ),
       );
     },
     CreateRoute.name: (routeData) {
@@ -101,6 +111,18 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MainScreen(),
       );
     },
+    MealPlanRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MealPlanScreen(),
+      );
+    },
+    MealPlanTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MealPlanTabPage(),
+      );
+    },
     MenuRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -119,10 +141,53 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const NotificationScreen(),
       );
     },
-    NotificationTabRoute.name: (routeData) {
+    ProfileSettingRoute.name: (routeData) {
+      final args = routeData.argsAs<ProfileSettingRouteArgs>(
+          orElse: () => const ProfileSettingRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const NotificationTabPage(),
+        child: ProfileSettingScreen(
+          key: args.key,
+          nextRoute: args.nextRoute,
+        ),
+      );
+    },
+    QueriesSettingRoute.name: (routeData) {
+      final args = routeData.argsAs<QueriesSettingRouteArgs>(
+          orElse: () => const QueriesSettingRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: QueriesSettingScreen(
+          key: args.key,
+          nextRoute: args.nextRoute,
+        ),
+      );
+    },
+    ScrapingDataRoute.name: (routeData) {
+      final args = routeData.argsAs<ScrapingDataRouteArgs>(
+          orElse: () => const ScrapingDataRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ScrapingDataScreen(
+          key: args.key,
+          onSelectRecipe: args.onSelectRecipe,
+        ),
+      );
+    },
+    SettingRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SettingPage(),
+      );
+    },
+    ShoppingListRoute.name: (routeData) {
+      final args = routeData.argsAs<ShoppingListRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ShoppingListScreen(
+          key: args.key,
+          user: args.user,
+        ),
       );
     },
     SplashRoute.name: (routeData) {
@@ -135,31 +200,69 @@ abstract class _$AppRouter extends RootStackRouter {
 }
 
 /// generated route for
-/// [CalendarScreen]
-class CalendarRoute extends PageRouteInfo<void> {
-  const CalendarRoute({List<PageRouteInfo>? children})
+/// [AccountScreen]
+class AccountRoute extends PageRouteInfo<void> {
+  const AccountRoute({List<PageRouteInfo>? children})
       : super(
-          CalendarRoute.name,
+          AccountRoute.name,
           initialChildren: children,
         );
 
-  static const String name = 'CalendarRoute';
+  static const String name = 'AccountRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
-/// [CalendarTabPage]
-class CalendarTabRoute extends PageRouteInfo<void> {
-  const CalendarTabRoute({List<PageRouteInfo>? children})
+/// [AccountTabPage]
+class AccountTabRoute extends PageRouteInfo<void> {
+  const AccountTabRoute({List<PageRouteInfo>? children})
       : super(
-          CalendarTabRoute.name,
+          AccountTabRoute.name,
           initialChildren: children,
         );
 
-  static const String name = 'CalendarTabRoute';
+  static const String name = 'AccountTabRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CalendarScreen]
+class CalendarRoute extends PageRouteInfo<CalendarRouteArgs> {
+  CalendarRoute({
+    Key? key,
+    required SpoonacularAccount user,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CalendarRoute.name,
+          args: CalendarRouteArgs(
+            key: key,
+            user: user,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CalendarRoute';
+
+  static const PageInfo<CalendarRouteArgs> page =
+      PageInfo<CalendarRouteArgs>(name);
+}
+
+class CalendarRouteArgs {
+  const CalendarRouteArgs({
+    this.key,
+    required this.user,
+  });
+
+  final Key? key;
+
+  final SpoonacularAccount user;
+
+  @override
+  String toString() {
+    return 'CalendarRouteArgs{key: $key, user: $user}';
+  }
 }
 
 /// generated route for
@@ -367,6 +470,34 @@ class MainRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MealPlanScreen]
+class MealPlanRoute extends PageRouteInfo<void> {
+  const MealPlanRoute({List<PageRouteInfo>? children})
+      : super(
+          MealPlanRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MealPlanRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MealPlanTabPage]
+class MealPlanTabRoute extends PageRouteInfo<void> {
+  const MealPlanTabRoute({List<PageRouteInfo>? children})
+      : super(
+          MealPlanTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MealPlanTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [MenuScreen]
 class MenuRoute extends PageRouteInfo<void> {
   const MenuRoute({List<PageRouteInfo>? children})
@@ -409,17 +540,169 @@ class NotificationRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [NotificationTabPage]
-class NotificationTabRoute extends PageRouteInfo<void> {
-  const NotificationTabRoute({List<PageRouteInfo>? children})
-      : super(
-          NotificationTabRoute.name,
+/// [ProfileSettingScreen]
+class ProfileSettingRoute extends PageRouteInfo<ProfileSettingRouteArgs> {
+  ProfileSettingRoute({
+    Key? key,
+    PageRouteInfo<dynamic>? nextRoute,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ProfileSettingRoute.name,
+          args: ProfileSettingRouteArgs(
+            key: key,
+            nextRoute: nextRoute,
+          ),
           initialChildren: children,
         );
 
-  static const String name = 'NotificationTabRoute';
+  static const String name = 'ProfileSettingRoute';
+
+  static const PageInfo<ProfileSettingRouteArgs> page =
+      PageInfo<ProfileSettingRouteArgs>(name);
+}
+
+class ProfileSettingRouteArgs {
+  const ProfileSettingRouteArgs({
+    this.key,
+    this.nextRoute,
+  });
+
+  final Key? key;
+
+  final PageRouteInfo<dynamic>? nextRoute;
+
+  @override
+  String toString() {
+    return 'ProfileSettingRouteArgs{key: $key, nextRoute: $nextRoute}';
+  }
+}
+
+/// generated route for
+/// [QueriesSettingScreen]
+class QueriesSettingRoute extends PageRouteInfo<QueriesSettingRouteArgs> {
+  QueriesSettingRoute({
+    Key? key,
+    PageRouteInfo<dynamic>? nextRoute,
+    List<PageRouteInfo>? children,
+  }) : super(
+          QueriesSettingRoute.name,
+          args: QueriesSettingRouteArgs(
+            key: key,
+            nextRoute: nextRoute,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'QueriesSettingRoute';
+
+  static const PageInfo<QueriesSettingRouteArgs> page =
+      PageInfo<QueriesSettingRouteArgs>(name);
+}
+
+class QueriesSettingRouteArgs {
+  const QueriesSettingRouteArgs({
+    this.key,
+    this.nextRoute,
+  });
+
+  final Key? key;
+
+  final PageRouteInfo<dynamic>? nextRoute;
+
+  @override
+  String toString() {
+    return 'QueriesSettingRouteArgs{key: $key, nextRoute: $nextRoute}';
+  }
+}
+
+/// generated route for
+/// [ScrapingDataScreen]
+class ScrapingDataRoute extends PageRouteInfo<ScrapingDataRouteArgs> {
+  ScrapingDataRoute({
+    Key? key,
+    dynamic Function(Recipe)? onSelectRecipe,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ScrapingDataRoute.name,
+          args: ScrapingDataRouteArgs(
+            key: key,
+            onSelectRecipe: onSelectRecipe,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ScrapingDataRoute';
+
+  static const PageInfo<ScrapingDataRouteArgs> page =
+      PageInfo<ScrapingDataRouteArgs>(name);
+}
+
+class ScrapingDataRouteArgs {
+  const ScrapingDataRouteArgs({
+    this.key,
+    this.onSelectRecipe,
+  });
+
+  final Key? key;
+
+  final dynamic Function(Recipe)? onSelectRecipe;
+
+  @override
+  String toString() {
+    return 'ScrapingDataRouteArgs{key: $key, onSelectRecipe: $onSelectRecipe}';
+  }
+}
+
+/// generated route for
+/// [SettingPage]
+class SettingRoute extends PageRouteInfo<void> {
+  const SettingRoute({List<PageRouteInfo>? children})
+      : super(
+          SettingRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SettingRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ShoppingListScreen]
+class ShoppingListRoute extends PageRouteInfo<ShoppingListRouteArgs> {
+  ShoppingListRoute({
+    Key? key,
+    required SpoonacularAccount user,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ShoppingListRoute.name,
+          args: ShoppingListRouteArgs(
+            key: key,
+            user: user,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ShoppingListRoute';
+
+  static const PageInfo<ShoppingListRouteArgs> page =
+      PageInfo<ShoppingListRouteArgs>(name);
+}
+
+class ShoppingListRouteArgs {
+  const ShoppingListRouteArgs({
+    this.key,
+    required this.user,
+  });
+
+  final Key? key;
+
+  final SpoonacularAccount user;
+
+  @override
+  String toString() {
+    return 'ShoppingListRouteArgs{key: $key, user: $user}';
+  }
 }
 
 /// generated route for

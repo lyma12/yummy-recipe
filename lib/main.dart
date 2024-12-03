@@ -1,6 +1,7 @@
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipe.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipes_random_response.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/user_comment/recipe_comment.dart';
+import 'package:base_code_template_flutter/data/models/queries/queries.dart';
 import 'package:base_code_template_flutter/data/models/user/user_firebase_profile.dart';
 import 'package:base_code_template_flutter/resources/theme_data.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +10,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:home_widget/home_widget.dart';
 
+import 'components/home_widget/home_widget_service.dart';
 import 'data/models/recipe/recipe.dart';
 import 'data/providers/app_router_provider.dart';
 
@@ -25,6 +28,12 @@ Future<void> main() async {
   Hive.registerAdapter(MeasureAdapter());
   Hive.registerAdapter(UserFirebaseProfileAdapter());
   Hive.registerAdapter(RecipeCommentApdater());
+  Hive.registerAdapter(QueriesAdapter());
+  Hive.registerAdapter(CuisineAdapter());
+  Hive.registerAdapter(MealTypeAdapter());
+  Hive.registerAdapter(IntoleranceAdapter());
+  Hive.registerAdapter(DietAdapter());
+  await HomeWidget.registerInteractivityCallback(interactiveCallback);
 
   await Firebase.initializeApp(
       //options: DefaultFirebaseOptions.currentPlatform,

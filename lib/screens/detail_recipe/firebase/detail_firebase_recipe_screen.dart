@@ -1,11 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:base_code_template_flutter/components/buttons/option_button.dart';
 import 'package:base_code_template_flutter/components/divider/divider_horizontal.dart';
+import 'package:base_code_template_flutter/components/loading/loading_view_model.dart';
 import 'package:base_code_template_flutter/data/providers/auth_repository_provider.dart';
 import 'package:base_code_template_flutter/data/providers/favourite_recipe_provider.dart';
-import 'package:base_code_template_flutter/data/providers/firebase_store_provider.dart';
 import 'package:base_code_template_flutter/data/providers/hive_storage_provider.dart';
 import 'package:base_code_template_flutter/data/providers/session_repository_provider.dart';
+import 'package:base_code_template_flutter/data/providers/user_provider.dart';
 import 'package:base_code_template_flutter/resources/app_text_styles.dart';
 import 'package:base_code_template_flutter/resources/gen/assets.gen.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/components/recipe_comment_view.dart';
@@ -16,17 +17,18 @@ import 'package:base_code_template_flutter/utilities/constants/text_constants.da
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../../data/providers/recipe_repository_provider.dart';
 import '../../../router/app_router.dart';
 
 final _provider = StateNotifierProvider.autoDispose<
     DetailFirebaseRecipeViewModel, DetailFirebaseRecipeState>(
   (ref) => DetailFirebaseRecipeViewModel(
     ref: ref,
-    firebaseStoreRepository: ref.watch(firebaseStoreRepositoryProvider),
-    sessionRepository: ref.watch(sessionRepositoryProvider),
-    hiveStorageManager: ref.watch(hiveStorageProvider),
+    firebaseStoreRepository: ref.read(recipeFirebaseRepositoryProvider),
+    sessionRepository: ref.read(sessionRepositoryProvider),
+    hiveStorageManager: ref.read(hiveStorageProvider),
     favouriteRecipeProvider: ref.read(favouriteRecipeProvider.notifier),
+    userProfileRepository: ref.read(userProfileProvider),
     auth: ref.read(firebaseAuthRepositoryProvider),
   ),
 );
@@ -46,24 +48,6 @@ class _DetailFirebaseRecipeViewState extends DetailRecipeViewState {
   final TextEditingController _controller = TextEditingController();
 
   @override
-  PreferredSizeWidget? buildAppBar(BuildContext context) => AppBar(
-        title:
-            state.recipe != null ? Text(state.recipe?.title ?? "Recipe") : null,
-        actions: [
-          IconButton(
-              onPressed: () async {
-                if (state.recipe != null) {
-                  await viewModel.saveRecipeInLocalStorage(state.recipe!);
-                }
-              },
-              icon: Icon(
-                Icons.download,
-                color: Theme.of(context).colorScheme.primary,
-              ))
-        ],
-      );
-
-  @override
   DetailFirebaseRecipeViewModel get viewModel => ref.read(_provider.notifier);
 
   @override
@@ -71,6 +55,9 @@ class _DetailFirebaseRecipeViewState extends DetailRecipeViewState {
 
   @override
   DetailFirebaseRecipeState get state => ref.watch(_provider);
+
+  @override
+  LoadingStateViewModel get loading => ref.watch(loadingStateProvider.notifier);
 
   @override
   List<Widget> otherSliverView() {
@@ -183,5 +170,21 @@ class _DetailFirebaseRecipeViewState extends DetailRecipeViewState {
     _focusNode.dispose();
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  Future<void> onInitData() async {
+    Object? error;
+    await loading.whileLoading(context, () async {
+      try {
+        await viewModel.initData(widget.recipe);
+      } catch (e) {
+        error = e;
+      }
+    });
+
+    if (error != null) {
+      handleError(error!);
+    }
   }
 }

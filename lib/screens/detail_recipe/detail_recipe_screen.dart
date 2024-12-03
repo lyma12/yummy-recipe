@@ -1,18 +1,17 @@
 import 'package:base_code_template_flutter/components/base_view/base_view.dart';
-import 'package:base_code_template_flutter/components/html_widget.dart';
-import 'package:base_code_template_flutter/components/loading/container_with_loading.dart';
-import 'package:base_code_template_flutter/components/loading/loading_view_model.dart';
 import 'package:base_code_template_flutter/components/loading_view_with_animation/shimmer_widget.dart';
+import 'package:base_code_template_flutter/components/web_components/html_widget.dart';
 import 'package:base_code_template_flutter/resources/app_text_styles.dart';
 import 'package:base_code_template_flutter/resources/gen/colors.gen.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/components/recipe_icon_view.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_state.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_view_model.dart';
-import 'package:base_code_template_flutter/utilities/utilities.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:base_code_template_flutter/utilities/exceptions/extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import '../../components/loading/container_with_loading.dart';
+import '../../components/loading/loading_view_model.dart';
 import '../../data/models/recipe/recipe.dart';
 
 abstract class DetailRecipeScreen extends BaseView {
@@ -23,6 +22,12 @@ abstract class DetailRecipeScreen extends BaseView {
 
 abstract class DetailRecipeViewState
     extends BaseViewState<DetailRecipeScreen, DetailRecipeViewModel> {
+  @override
+  Future<bool> onWillPop() {
+    viewModel.returnRecipeBefore();
+    return super.onWillPop();
+  }
+
   @override
   Future<void> onInitState() async {
     super.onInitState();
@@ -114,7 +119,8 @@ abstract class DetailRecipeViewState
   }
 
   Widget _getListTags() {
-    final tags = Utilities.getTagsRecipe(state.recipe);
+    final recipe = state.recipe;
+    final tags = recipe?.getTag() ?? [];
     return state.recipe != null
         ? SizedBox(
             height: 240,

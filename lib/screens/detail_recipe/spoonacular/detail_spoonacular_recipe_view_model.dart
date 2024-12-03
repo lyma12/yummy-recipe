@@ -6,6 +6,7 @@ import 'package:base_code_template_flutter/data/services/hive_storage/hive_stora
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_state.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../data/models/api/responses/nutrition/nutrients.dart';
 
 class DetailSpoonacularRecipeViewModel
     extends DetailRecipeViewModel<DetailSpoonacularRecipeState> {
@@ -17,9 +18,13 @@ class DetailSpoonacularRecipeViewModel
     required this.spoonacularRepository,
   }) : super(
             ref, favouriteRecipeProvider, const DetailSpoonacularRecipeState());
-  final SpoonacularRepository spoonacularRepository;
+  final RecipeSpoonacularRepository spoonacularRepository;
   final SessionRepository sessionRepository;
   final HiveStorage hiveStorage;
+
+  List<Recipe> listRecipeHistory = [];
+  List<Nutrition> listNutritionsInRecipeHistory = [];
+  List<List<Recipe>> listSimilarHistory = [];
 
   @override
   Future<void> initData(Recipe recipe) async {
@@ -40,6 +45,18 @@ class DetailSpoonacularRecipeViewModel
       getSimilarRecipes(id),
       getNutritionInRecipe(id),
     ]);
+    final recipe = state.recipe;
+    final nutrition = state.nutrition;
+    final listSimilar = state.similarRecipes;
+    if (recipe != null) {
+      listRecipeHistory.add(recipe);
+    }
+    if (nutrition != null) {
+      listNutritionsInRecipeHistory.add(nutrition);
+    }
+    if (listSimilar != null && listSimilar.isNotEmpty) {
+      listSimilarHistory.add(listSimilar);
+    }
   }
 
   @override
@@ -115,5 +132,21 @@ class DetailSpoonacularRecipeViewModel
       nutrition: response,
     );
     sessionRepository.saveNutritionInRecipe(response);
+  }
+
+  @override
+  void returnRecipeBefore() {
+    if (listRecipeHistory.length > 1 &&
+        listNutritionsInRecipeHistory.length > 1 &&
+        listSimilarHistory.length > 1) {
+      listRecipeHistory.removeLast();
+      listNutritionsInRecipeHistory.removeLast();
+      listSimilarHistory.removeLast();
+      state = state.copyWith(
+        recipe: listRecipeHistory.last,
+        similarRecipes: listSimilarHistory.last,
+        nutrition: listNutritionsInRecipeHistory.last,
+      );
+    }
   }
 }

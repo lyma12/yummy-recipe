@@ -1,7 +1,6 @@
 import 'package:base_code_template_flutter/components/loading_view_with_animation/shimmer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
 import '../../resources/gen/assets.gen.dart';
 
 class ProfileAvatar extends StatelessWidget {
@@ -25,7 +24,7 @@ class ProfileAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
-      child: imageUrl != null
+      child: imageUrl != null && (imageUrl?.isNotEmpty ?? false)
           ? CachedNetworkImage(
               imageUrl: imageUrl ?? "",
               width: width,

@@ -7,7 +7,7 @@ import 'package:base_code_template_flutter/data/models/user/user_firebase_profil
 import 'package:base_code_template_flutter/data/repositories/api/session/session_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/api/spoonacular/spoonacular_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/firebase/firebase_storage_repository.dart';
-import 'package:base_code_template_flutter/data/repositories/firebase/firebase_store_repository.dart';
+import 'package:base_code_template_flutter/data/repositories/firebase/recipe_firebase_store_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/signin/signin_repository.dart';
 import 'package:base_code_template_flutter/screens/create/create_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,10 +22,10 @@ class CreateViewModel extends BaseViewModel<CreateState> {
     required this.authRepository,
   }) : super(const CreateState());
   final Ref ref;
-  final SpoonacularRepository spoonacularRepository;
+  final RecipeSpoonacularRepository spoonacularRepository;
   final SessionRepository sessionRepository;
   final FirebaseStorageRepository firebaseStorageRepository;
-  final FirebaseStoreRespository firebaseStoreRespository;
+  final RecipeFirebaseStoreRepository firebaseStoreRespository;
   final AuthRepository authRepository;
   String _historySearch = "";
 

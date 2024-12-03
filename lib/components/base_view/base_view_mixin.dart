@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../../resources/gen/colors.gen.dart';
 
 mixin BaseViewMixin {
@@ -48,7 +47,11 @@ mixin BaseViewMixin {
         top: ignoreSafeAreaTap,
         bottom: ignoreSafeAreaBottom,
         child: PopScope(
-          //onWillPop: onWillPop,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) {
+              onWillPop();
+            }
+          },
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: (() {

@@ -3,25 +3,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-abstract class SigninRepository {
-  Future<UserCredential> signin();
+abstract class SignInRepository {
+  Future<UserCredential> signIn();
 }
 
 abstract class AuthRepository {
-  Future<UserCredential> signin(String email, String password);
+  Future<UserCredential> signIn(String email, String password);
 
   Future<UserCredential> signup(String email, String password);
 
-  Future<void> signout();
+  Future<void> signOut();
 
   User getUserCredential();
 
   UserFirebaseProfile getUserProfile();
+
+  Future<void> editProfile(UserFirebaseProfile profile);
 }
 
-class FacebookRepositoryImpl implements SigninRepository {
+class FacebookRepositoryImpl implements SignInRepository {
   @override
-  Future<UserCredential> signin() async {
+  Future<UserCredential> signIn() async {
     final LoginResult result = await FacebookAuth.instance.login();
     if (result.status == LoginStatus.success) {
       final OAuthCredential credential =
@@ -32,9 +34,9 @@ class FacebookRepositoryImpl implements SigninRepository {
   }
 }
 
-class GoogleRepositoryImpl implements SigninRepository {
+class GoogleRepositoryImpl implements SignInRepository {
   @override
-  Future<UserCredential> signin() async {
+  Future<UserCredential> signIn() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
@@ -46,19 +48,19 @@ class GoogleRepositoryImpl implements SigninRepository {
 
 class AuthRepositoryImpl implements AuthRepository {
   @override
-  Future<UserCredential> signin(String email, String password) {
-    return FirebaseAuth.instance
+  Future<UserCredential> signIn(String email, String password) async {
+    return await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
   }
 
   @override
-  Future<UserCredential> signup(String email, String password) {
-    return FirebaseAuth.instance
+  Future<UserCredential> signup(String email, String password) async {
+    return await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
   }
 
   @override
-  Future<void> signout() {
+  Future<void> signOut() {
     return FirebaseAuth.instance.signOut();
   }
 
@@ -79,5 +81,21 @@ class AuthRepositoryImpl implements AuthRepository {
         name: user.displayName ?? "user_${user.uid}",
         imageUrl: user.photoURL);
     return userProfile;
+  }
+
+  @override
+  Future<void> editProfile(UserFirebaseProfile profile) async {
+    User user = getUserCredential();
+
+    await Future.wait([
+      user.updateDisplayName(profile.name).catchError((error) =>
+          throw FirebaseAuthException(
+              code: "failed to update name",
+              message: "failed to update name firebase profile")),
+      user.updatePhotoURL(profile.imageUrl).catchError((error) =>
+          throw FirebaseAuthException(
+              code: "failed to update image",
+              message: "failed to update image firebase profile")),
+    ]);
   }
 }

@@ -3,15 +3,17 @@ import 'dart:async';
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
 import 'package:base_code_template_flutter/data/repositories/api/session/session_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/api/spoonacular/spoonacular_repository.dart';
-import 'package:base_code_template_flutter/data/repositories/firebase/firebase_store_repository.dart';
+import 'package:base_code_template_flutter/data/repositories/firebase/recipe_firebase_store_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/signin/signin_repository.dart';
 import 'package:base_code_template_flutter/data/services/hive_storage/hive_storage.dart';
 import 'package:base_code_template_flutter/screens/home/home_state.dart';
+import 'package:base_code_template_flutter/utilities/exceptions/extension.dart';
 import 'package:base_code_template_flutter/utilities/utilities.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../components/base_view/base_view_model.dart';
+import '../../utilities/constants/firebae_recipe_field_name.dart';
 
 class HomeViewModel extends BaseViewModel<HomeState> {
   HomeViewModel({
@@ -24,8 +26,8 @@ class HomeViewModel extends BaseViewModel<HomeState> {
   }) : super(const HomeState());
 
   final Ref ref;
-  final SpoonacularRepository spoonacularRepository;
-  final FirebaseStoreRespository firebaseStoreResposity;
+  final RecipeSpoonacularRepository spoonacularRepository;
+  final RecipeFirebaseStoreRepository firebaseStoreResposity;
   final SessionRepository sessionRepository;
   final AuthRepository auth;
   final HiveStorage hiveStorage;
@@ -35,14 +37,23 @@ class HomeViewModel extends BaseViewModel<HomeState> {
   int _limitRecipes = 10;
 
   Future<void> initData() async {
-    final queries = {
-      "number": numberRecipeGet,
-      "offset": _offsetRecipes,
-    };
+    final queries = await getQueries();
     await Future.wait([
       _getRecipe(queries),
     ]);
     _listenToRecipes();
+  }
+
+  Future<Map<String, dynamic>> getQueries() async {
+    Map<String, dynamic> queries = {
+      "number": numberRecipeGet,
+      "offset": _offsetRecipes,
+    };
+    var userOptionQueries = await hiveStorage.readQueries();
+    if (userOptionQueries != null) {
+      queries.addAll(userOptionQueries.getMap());
+    }
+    return queries;
   }
 
   TimeTypeInDay _getTimeNowInDay() {
@@ -85,14 +96,11 @@ class HomeViewModel extends BaseViewModel<HomeState> {
   }
 
   Future<void> getMoreRecipe() async {
-    final queries = {
-      "number": numberRecipeGet,
-      "offset": _offsetRecipes,
-    };
-    _getRecipe(queries);
+    final queries = await getQueries();
+    await _getRecipe(queries);
   }
 
-  Future<void> _getRecipe(Map<String, int> queries) async {
+  Future<void> _getRecipe(Map<String, dynamic> queries) async {
     final hasCacheRecipes = await _getCachedRecipeList(_offsetRecipes);
     if (!hasCacheRecipes) {
       await _getRecipeResponseList(queries);
@@ -102,15 +110,15 @@ class HomeViewModel extends BaseViewModel<HomeState> {
   Future<bool> _getCachedRecipeList(int offset) async {
     var recipeResponse = sessionRepository.recipesRandomResponse(offset);
     recipeResponse ??= await hiveStorage.readRecipesRandomResponse(offset);
-    if (recipeResponse != null) {
+    if (recipeResponse != null && recipeResponse.isNotEmpty) {
       state =
           state.copyWith(recipeList: [...state.recipeList, ...recipeResponse]);
       _offsetRecipes = _offsetRecipes + recipeResponse.length;
     }
-    return recipeResponse != null;
+    return recipeResponse != null && recipeResponse.isNotEmpty;
   }
 
-  Future<void> _getRecipeResponseList(Map<String, int> queries) async {
+  Future<void> _getRecipeResponseList(Map<String, dynamic> queries) async {
     final recipeResponse = await spoonacularRepository.getRecipes(queries);
     _offsetRecipes = recipeResponse.offset + recipeResponse.results.length;
     bool getTrue = recipeResponse.offset + 6 <= recipeResponse.number;
@@ -141,8 +149,9 @@ class HomeViewModel extends BaseViewModel<HomeState> {
       }
       recipe = recipe.copyWith(like: listLiker.length, peopleLike: listLiker);
       Map<String, dynamic> data = {
-        'like': recipe.like,
-        'peopleLike': Utilities.getUserPeopleLikeToFirebse(recipe.peopleLike),
+        FirebaseRecipeFieldName.like: recipe.like,
+        FirebaseRecipeFieldName.peopleLike:
+            Utilities.getUserPeopleLikeToFirebase(recipe.peopleLike),
       };
       firebaseStoreResposity.updateRecipes(data, recipe.id);
     }
@@ -156,7 +165,9 @@ class HomeViewModel extends BaseViewModel<HomeState> {
   void _listenToRecipes() {
     _recipeStream = firebaseStoreResposity.listenRecipesStream(_limitRecipes);
     _recipeStream!.listen((recipes) {
-      state = state.copyWith(recipePostList: recipes);
+      if (mounted) {
+        state = state.copyWith(recipePostList: recipes);
+      }
     });
   }
 }

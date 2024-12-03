@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 
 part 'recipe.freezed.dart';
+
 part 'recipe.g.dart';
 
 enum RecipeTagType {
@@ -46,6 +47,7 @@ class Measure with _$Measure {
     @HiveField(0) double? amount,
     @HiveField(1) String? unitLong,
     @HiveField(2) String? unitShort,
+    @HiveField(3) String? unit,
   }) = _Measure;
 
   factory Measure.fromJson(Map<String, dynamic> json) =>

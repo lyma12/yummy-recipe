@@ -47,6 +47,10 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
   );
 
+  static final titleSmallWhite = titleSmall.copyWith(
+    color: Colors.white,
+  );
+
   static final titleLargeBold = titleLarge.copyWith(
     fontSize: 28,
     fontWeight: FontWeight.bold,
