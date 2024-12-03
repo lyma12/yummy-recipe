@@ -1,0 +1,73 @@
+{
+    "pageViewTitle1": "Hand-pickle high quality snacks.",
+    "pageViewTitle2": "Shop global. Mind-blownly affordable.",
+    "pageViewTitle3": "Deliver on the promise of time.",
+    
+    "buttonDashBoard": "Get started",
+
+    "sign_in" : "Sign in",
+    "sign_in_with" : "Sign in with ",
+    "sign_up_with_email": "Sign up with email",
+
+    "sign_up_title" : "Welcome back!",
+    "create_account" : "Create account",
+
+    "hint_email_signup": "simit.donuts@gmail.com",
+    "hint_password_signup": "password",
+    "text_down_1": "By clicking \"Create account\", I agree to SnackOverflow's TOS and Privacy Policy",
+
+    "home": "Home",
+    "markert": "Market",
+    "create": "Create",
+    "wish_list": "Whishlist",
+    "account": "Account",
+
+    "good_1": "Good morning",
+    "good_2": "Good afternoon",
+    "good_3": "Good evening",
+
+    "messeage_app_1": "Take a break from work",
+    "messeage_app_2": "Let's eat something really special",
+    "messeage_app_3": "Fantastic desserts",
+
+    "random_recipe_title": "Surprise recipes",
+
+    "cheap" : "Công thức này có chi phí thấp để thực hiện.",
+    "dairy_free" : "Công thức không chứa sản phẩm từ sữa.",
+    "gluten_free" : "Công thức không chứa gluten, phù hợp với người nhạy cảm với gluten hoặc bệnh celiac.",
+    "ketogenic" : "Công thức phù hợp với chế độ ăn ketogenic, thường chứa ít carbohydrate và nhiều chất béo.",
+    "lowFodmap" : "Công thức phù hợp với chế độ ăn low-FODMAP, giúp giảm các triệu chứng tiêu hóa cho người mắc hội chứng ruột kích thích (IBS).",
+    "sustainable" : "Công thức này được chuẩn bị với nguyên liệu hoặc phương pháp bền vững về môi trường.",
+    "vegan" : "Công thức không chứa bất kỳ sản phẩm động vật nào.",
+    "vegetarian" : "Công thức không chứa thịt, nhưng có thể chứa các sản phẩm từ sữa và trứng.",
+    "very_healthy" : "Công thức rất tốt cho sức khỏe, thường chứa nhiều chất dinh dưỡng và ít thành phần không lành mạnh.",
+    "whole30" : "Công thức phù hợp với chế độ ăn Whole30, không chứa đường, ngũ cốc, đậu, hoặc sản phẩm từ sữa trong 30 ngày.",
+    "cost_serving": "One serving costs",
+    "spoonacular_score": "Spoonacular score",
+    "health_score": "Health score",
+    "ready_in_minutes": "Ready in minutes",
+
+    "create": "Create",
+    "analyze": "Analyze",
+    "title_recipe": "Name recipe",
+    "serving": "Serving",
+    "cooking_in_minute": "Cooking in minute",
+    "sumary_recipe": "Tell us about this dish. Who or what inspired you to cook it? Why is it special? How do you like to enjoy it?",
+    "complete_text": "Please enter some text",
+    "ingredient": "Ingredient",
+    "intructions": "Instruction",
+
+    "save": "Save",
+    "enter_amount": "Enter amount",
+    "price_per_serving" : "Price Per Serving: ",
+    "take_photo" : "Take photo",
+    "recipes": "Recipes",
+    "see_more": "See more",
+    "write_comment": "Write a comment...",
+    "favourite_recipes": "Favourite recipes",
+    "save_recipes": "Save recipes",
+    "no_favourite_recipe": "Have no favourite recipes",
+    "no_save_recipe": "Have no save recipes",
+    "opps" : "OOPS"
+}
+
