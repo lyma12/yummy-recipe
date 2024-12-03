@@ -28,12 +28,9 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     CalendarRoute.name: (routeData) {
-      final args = routeData.argsAs<ShoppingListRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: CalendarScreen(
-          user: args.user,
-        ),
+        child: const CalendarScreen(),
       );
     },
     CreateRoute.name: (routeData) {
