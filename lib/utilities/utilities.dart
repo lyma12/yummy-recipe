@@ -1,3 +1,5 @@
+
+import 'dart:convert';
 import 'package:base_code_template_flutter/components/chart/pie_chart.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/nutrition/nutrients.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipe.dart';
@@ -5,14 +7,15 @@ import 'package:base_code_template_flutter/data/models/api/responses/user_commen
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
 import 'package:base_code_template_flutter/data/models/user/user_firebase_profile.dart';
 import 'package:base_code_template_flutter/utilities/constants/app_constants.dart';
+import 'package:base_code_template_flutter/data/models/shopping_list/shopping_list.dart';
 import 'package:base_code_template_flutter/utilities/constants/firebae_recipe_field_name.dart';
 import 'package:base_code_template_flutter/utilities/exceptions/email_exception.dart';
 import 'package:base_code_template_flutter/utilities/exceptions/password_exception.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../resources/gen/assets.gen.dart';
+import 'constants/firebase_user_profile_field_name.dart';
 import 'constants/text_constants.dart';
 
 class Utilities {
@@ -81,7 +84,8 @@ class Utilities {
     return result;
   }
 
-  static Map<String, dynamic> getUserPeopleLikeToFirebse(
+
+  static Map<String, dynamic> getUserPeopleLikeToFirebase(
       List<UserFirebaseProfile> peopleLike) {
     Map<String, dynamic> result = {};
     for (var i in peopleLike) {
@@ -146,7 +150,7 @@ class Utilities {
     json[FirebaseRecipeFieldName.extendedIngredients] =
         Utilities.getIngredientsToFirebase(recipe.extendedIngredients);
     json[FirebaseRecipeFieldName.peopleLike] =
-        Utilities.getUserPeopleLikeToFirebse(recipe.peopleLike);
+        Utilities.getUserPeopleLikeToFirebase(recipe.peopleLike);
     json[FirebaseRecipeFieldName.listComment] =
         Utilities.getListCommentToFirebase(recipe.listComment);
     json[FirebaseRecipeFieldName.user] = recipe.user?.toJson();
@@ -196,6 +200,15 @@ class Utilities {
     ];
   }
 
+  static String formatDateTimeSpoonacular(DateTime date) {
+    return date.toIso8601String().split('T').first;
+  }
+
+  static String formatDateTimeFromSpoonacular(int date) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date * 1000);
+    return "${dateTime.day}/${dateTime.month}/${dateTime.year}";
+  }
+
   static String formatEnumQueriesName(String text) {
     String name = text.split('.').last;
     String formattedName = name
@@ -221,5 +234,61 @@ class Utilities {
     } else {
       return "${AppConstants.spoonacularUrlImageIngredient}$image";
     }
+  }
+  static Map<String, dynamic> converterShoppingListForFirebase(
+      Map<String, Map<String, bool>> shoppingList) {
+    return {FirebaseUserProfileFieldName.shoppingList: shoppingList};
+  }
+
+  static String converterDataForHomeWidget(
+    Map<String, List<ItemAisles>> shoppingList,
+    Map<String, Map<String, bool>> stateList,
+  ) {
+    Map<String, dynamic> jsonMap = shoppingList.map((key, value) {
+      return MapEntry(
+          key,
+          value.map((item) {
+            Map<String, dynamic> itemJson = item.toJson();
+            itemJson[TextConstants.isChecked] =
+                stateList[key]?[item.id.toString()] ?? false;
+            return itemJson;
+          }).toList());
+    });
+    return jsonEncode(jsonMap);
+  }
+
+  static String updateWhenCheckItemHomeWidget(
+      String json, String item, int id) {
+    try {
+      Map<String, dynamic> data = jsonDecode(json);
+      var listItem = data[item] ?? [];
+      for (var i in listItem) {
+        if (i[TextConstants.id] == id) {
+          i[TextConstants.isChecked] = !i[TextConstants.isChecked];
+        }
+      }
+      return jsonEncode(data);
+    } catch (e) {
+      throw Exception("Can't update data home widget!");
+    }
+  }
+
+  static Map<String, Map<String, bool>> convertDataHomeWidgetToState(
+      String json) {
+    Map<String, dynamic> data = jsonDecode(json);
+    Map<String, Map<String, bool>> result = {};
+    data.forEach((key, item) {
+      if (item is List<dynamic>) {
+        Map<String, bool> innerMap = {};
+        for (var i in item) {
+          var value = i[TextConstants.isChecked];
+          if (value is bool) {
+            innerMap[i[TextConstants.id].toString()] = value;
+          }
+        }
+        result[key] = innerMap;
+      }
+    });
+    return result;
   }
 }

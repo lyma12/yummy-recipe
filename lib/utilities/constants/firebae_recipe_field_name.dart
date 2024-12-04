@@ -7,3 +7,7 @@ class FirebaseRecipeFieldName {
   static String createAt = 'createAt';
   static String like = 'like';
 }
+
+class FirebaseUser {
+  static String user = 'user_info';
+}

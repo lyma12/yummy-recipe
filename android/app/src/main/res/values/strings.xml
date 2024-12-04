@@ -4,4 +4,7 @@
     <string name="facebook_app_id">1677312459502224</string>
     <string name="fb_login_protocol_scheme">fb1677312459502224</string>
     <string name="facebook_client_token">481cf65765fed39e81291ec948fc58f5</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
 </resources>

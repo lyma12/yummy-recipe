@@ -6,7 +6,6 @@ import 'package:base_code_template_flutter/data/services/hive_storage/hive_stora
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_state.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../data/models/api/responses/nutrition/nutrients.dart';
 
 class DetailSpoonacularRecipeViewModel

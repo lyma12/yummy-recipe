@@ -151,7 +151,7 @@ class HomeViewModel extends BaseViewModel<HomeState> {
       Map<String, dynamic> data = {
         FirebaseRecipeFieldName.like: recipe.like,
         FirebaseRecipeFieldName.peopleLike:
-            Utilities.getUserPeopleLikeToFirebse(recipe.peopleLike),
+            Utilities.getUserPeopleLikeToFirebase(recipe.peopleLike),
       };
       firebaseStoreResposity.updateRecipes(data, recipe.id);
     }

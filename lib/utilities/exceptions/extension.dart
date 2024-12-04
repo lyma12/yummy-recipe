@@ -1,8 +1,9 @@
 import 'dart:core';
-
 import 'package:base_code_template_flutter/data/models/user/user_firebase_profile.dart';
-
 import '../../data/models/api/responses/spooncular/recipe.dart';
+import 'package:base_code_template_flutter/utilities/constants/app_constants.dart';
+import 'package:flutter/material.dart';
+import '../../data/models/meal_plan/meal_plan.dart';
 import '../../data/models/queries/queries.dart';
 import '../../data/models/recipe/recipe.dart';
 
@@ -29,6 +30,17 @@ extension ConvertQueries on Queries {
 }
 
 extension TagRecipe on Recipe {
+  String get itemMealType {
+    switch (this) {
+      case SpooncularRecipe():
+        return AppConstants.itemMealPlanTypeRecipe;
+      case FirebaseRecipe():
+        return AppConstants.itemMealPlanTypeIngredients;
+      default:
+        return AppConstants.itemMealPlanTypeProduct;
+    }
+  }
+
   List<RecipeTagType> getTag() {
     List<RecipeTagType> tags = [];
     if (cheap ?? false) {
@@ -82,5 +94,41 @@ extension ListExtensions<T> on List<T> {
       result.add(f(i, this[i]));
     }
     return result;
+  }
+}
+
+extension DateTimeExtension on DateTime {
+  bool isDay(DateTime otherDate) {
+    return otherDate.year == year &&
+        otherDate.month == month &&
+        otherDate.day == day;
+  }
+}
+
+extension ItemMealConvertType on ItemMeal {
+  ItemMealType getType() {
+    switch (type) {
+      case AppConstants.itemMealPlanTypeRecipe:
+        return ItemMealType.recipe;
+      case AppConstants.itemMealPlanTypeIngredients:
+        return ItemMealType.ingredients;
+      case AppConstants.itemMealPlanTypeProduct:
+        return ItemMealType.product;
+      default:
+        return ItemMealType.customFood;
+    }
+  }
+
+  Color get color {
+    switch (getType()) {
+      case ItemMealType.recipe:
+        return Colors.redAccent;
+      case ItemMealType.ingredients:
+        return Colors.purpleAccent;
+      case ItemMealType.product:
+        return Colors.blueAccent;
+      default:
+        return Colors.orangeAccent;
+    }
   }
 }

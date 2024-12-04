@@ -15,6 +15,7 @@ class HiveStorage {
   static const _similarRecipes = 'similarRecipes';
   static const _recipeDataSave = 'recipe_save';
   static const _queries = 'queries';
+  static const _deleteShoppingItem = 'deleteShoppingItem';
 
   static const maxTimeStamp = 5;
   static const maxNumberInStorage = 10;
@@ -147,11 +148,28 @@ class HiveStorage {
     return box.get(_queries);
   }
 
+  Future saveDeleteShoppingList(int id, String aisleKey) async {
+    var box = await Hive.openBox<String>(_deleteShoppingItem);
+    box.put(id, aisleKey);
+  }
+
+  Future<Map<int, String>> readDeleteShoppingList() async {
+    var box = await Hive.openBox<String>(_deleteShoppingItem);
+    final Map<int, String> shoppingList = {};
+    for (var key in box.keys) {
+      if (key != null) {
+        shoppingList[key] = box.get(key) ?? "";
+      }
+    }
+    return shoppingList;
+  }
+
   Future<void> clearDataAccount() async {
     await Future.wait([
       _clearBox<Recipe>(_recipeDataSave),
       _clearBox<Queries>(_queries),
       _clearBox<RecipesRandomResponse>(_recipesRandomResponse),
+      _clearBox<String>(_deleteShoppingItem),
     ]);
   }
 

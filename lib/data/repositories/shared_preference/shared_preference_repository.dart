@@ -12,7 +12,7 @@ class FirstTimeRepositoryTmpl implements SharedPreferenceRepository {
   }
 
   late SharedPreferences _preferences;
-  bool _isInitialized = false; // Biến đánh dấu trạng thái khởi tạo
+  bool _isInitialized = false;
 
   Future<void> _init() async {
     if (!_isInitialized) {

@@ -9,4 +9,9 @@ class AppConstants {
   static const httpString = "https://";
   static const spoonacularUrlImageIngredient =
       "https://img.spoonacular.com/ingredients_100x100/";
+  static const itemMealPlanTypeRecipe = "RECIPE";
+  static const itemMealPlanTypeProduct = "PRODUCT";
+  static const itemMealPlanTypeMenuItem = "MENU_ITEM";
+  static const itemMealPlanTypeCustomFood = "CUSTOM_FOOD";
+  static const itemMealPlanTypeIngredients = "INGREDIENTS";
 }

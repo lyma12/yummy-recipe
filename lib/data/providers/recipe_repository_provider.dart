@@ -11,7 +11,7 @@ import '../repositories/firebase/recipe_firebase_store_repository.dart';
 final recipeSpoonacularRepositoryProvider =
     Provider<RecipeSpoonacularRepository>(
   (ref) => RecipeSpoonacularRepositoryImpl(
-    ref.watch(apiSpoonacularProvider),
+    ref.read(apiSpoonacularProvider),
   ),
 );
 final recipeFirebaseRepositoryProvider =

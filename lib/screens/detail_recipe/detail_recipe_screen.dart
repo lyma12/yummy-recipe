@@ -6,12 +6,12 @@ import 'package:base_code_template_flutter/resources/gen/colors.gen.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/components/recipe_icon_view.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_state.dart';
 import 'package:base_code_template_flutter/screens/detail_recipe/detail_recipe_view_model.dart';
-import 'package:base_code_template_flutter/utilities/exceptions/extension.dart';
-import 'package:base_code_template_flutter/utilities/utilities.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:base_code_template_flutter/utilities/exceptions/extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import '../../components/loading/container_with_loading.dart';
+import '../../components/loading/loading_view_model.dart';
 import '../../data/models/recipe/recipe.dart';
 
 abstract class DetailRecipeScreen extends BaseView {
@@ -36,7 +36,20 @@ abstract class DetailRecipeViewState
     });
   }
 
-  Future<void> onInitData();
+  Future<void> onInitData() async {
+    Object? error;
+    await loading.whileLoading(context, () async {
+      try {
+        await viewModel.initData(widget.recipe);
+      } catch (e) {
+        error = e;
+      }
+    });
+
+    if (error != null) {
+      handleError(error!);
+    }
+  }
 
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) => AppBar(
@@ -58,12 +71,13 @@ abstract class DetailRecipeViewState
 
   @override
   Widget buildBody(BuildContext context) {
-    return CustomScrollView(
+    return ContainerWithLoading(
+        child: CustomScrollView(
       slivers: [
         ...recipeView(),
         ...otherSliverView(),
       ],
-    );
+    ));
   }
 
   List<Widget> otherSliverView();
@@ -106,8 +120,8 @@ abstract class DetailRecipeViewState
 
   Widget _getListTags() {
     final recipe = state.recipe;
-    final tags = recipe != null ? recipe.getTag() : [];
-    return recipe != null
+    final tags = recipe?.getTag() ?? [];
+    return state.recipe != null
         ? SizedBox(
             height: 240,
             child: ListView.builder(
@@ -170,7 +184,6 @@ abstract class DetailRecipeViewState
             ),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                final ingredient = state.recipe?.extendedIngredients[index];
                 return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 10),
                     alignment: Alignment.center,
@@ -181,10 +194,11 @@ abstract class DetailRecipeViewState
                           height: 100,
                           fit: BoxFit.fill,
                           imageUrl:
-                              Utilities.getImageIngredient(ingredient?.image),
+                              "https://img.spoonacular.com/ingredients_100x100/${state.recipe?.extendedIngredients[index].image}",
                         ),
                         Text(
-                          ingredient?.original ?? "",
+                          state.recipe?.extendedIngredients[index].original ??
+                              "",
                           overflow: TextOverflow.clip,
                         ),
                       ],
@@ -327,4 +341,6 @@ abstract class DetailRecipeViewState
   }
 
   DetailRecipeState get state;
+
+  LoadingStateViewModel get loading => ref.read(loadingStateProvider.notifier);
 }

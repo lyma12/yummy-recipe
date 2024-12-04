@@ -35,4 +35,18 @@ class TextConstants {
   static const webViewSpoonacular =
       "https://spoonacular.com/academy/which-diet-is-best-for-me";
   static const webViewGoogle = "https://google.com";
+
+  /// end_point home widget
+  static const checkItemHost = "checkitem";
+  static const refreshItemHost = "refreshitem";
+
+  /// key home widge
+  static const homeWidgetName = "ShoppingListHomeWidget";
+  static const keyListItem = 'list_item';
+  static const keyTitleHomeWidget = 'item';
+
+  /// key query home widget
+  static const id = 'id';
+  static const type = 'type';
+  static const isChecked = 'isChecked';
 }

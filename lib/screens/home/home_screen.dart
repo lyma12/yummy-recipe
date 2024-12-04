@@ -99,57 +99,48 @@ class _HomeViewState extends BaseViewState<HomeScreen, HomeViewModel> {
       child: CustomScrollView(
         controller: scrollControllerListFirebase,
         slivers: [
-          SliverToBoxAdapter(
-            child: _topBanner(context),
+          SliverAppBar(
+            flexibleSpace: Assets.images.signinBackGround.image(
+              fit: BoxFit.cover,
+            ),
+            expandedHeight: 300,
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(80.0),
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                color: Colors.black54,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      viewModel.getMessage(AppLocalizations.of(context)) ?? "",
+                      style: AppTextStyles.bodyLargeWhite,
+                    ),
+                    Text(
+                      viewModel.getMessageSuggest(
+                              AppLocalizations.of(context)) ??
+                          "",
+                      style: AppTextStyles.bodyLargeWhite,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.search,
+                    size: 25,
+                    color: Colors.white,
+                  ))
+            ],
           ),
           SliverToBoxAdapter(
             child: _buildRecipeListData(),
           ),
           _buildListRecipePost(),
         ],
-      ),
-    );
-  }
-
-  Widget _topBanner(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: Assets.images.signinBackGround.provider(),
-            fit: BoxFit.cover),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const SizedBox(
-              width: double.infinity,
-              height: 120,
-            ),
-            const Row(
-              children: [
-                Icon(
-                  Icons.add_location_alt_outlined,
-                  color: Colors.white,
-                ),
-                Text(
-                  "location",
-                  style: TextStyle(color: Colors.white),
-                )
-              ],
-            ),
-            Text(
-              viewModel.getMessage(AppLocalizations.of(context)) ?? "",
-              style: AppTextStyles.bodyLargeWhite,
-            ),
-            Text(
-              viewModel.getMessageSuggest(AppLocalizations.of(context)) ?? "",
-              style: AppTextStyles.bodyLargeWhite,
-            )
-          ],
-        ),
       ),
     );
   }

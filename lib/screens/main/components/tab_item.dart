@@ -9,43 +9,56 @@ class TabItem extends ConsumerWidget {
     required this.mainTab,
     required this.isActive,
     required this.onTap,
+    required this.height,
     super.key,
   });
 
   final MainTab mainTab;
-
   final bool isActive;
-
   final VoidCallback onTap;
+  final double height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final width = MediaQuery.of(context).size.width;
+
     return InkWell(
       onTap: onTap,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width / 6,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        width: isActive ? width / 3 : width / 6,
+        height: height,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             isActive
-                ? mainTab.activeIconPath(context)
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Row(
+                      children: [
+                        mainTab.activeIconPath(context),
+                        if (isActive)
+                          Expanded(
+                            child: AnimatedOpacity(
+                              duration: const Duration(milliseconds: 300),
+                              opacity: isActive ? 1.0 : 0.6,
+                              child: Text(
+                                mainTab.getLabel(context),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: AppTextStyles.bottomBarItemOn
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  )
                 : mainTab.iconPath(context),
-            const SizedBox(height: 5),
-            Expanded(
-              child: Text(
-                mainTab.getLabel(context),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: isActive
-                    ? AppTextStyles.bottomBarItemOn
-                        .copyWith(color: Theme.of(context).colorScheme.primary)
-                    : AppTextStyles.bottomBarItem.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
+            if (isActive)
+              SizedBox(
+                height: height / 10,
               ),
-            ),
           ],
         ),
       ),

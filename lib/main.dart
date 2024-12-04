@@ -10,7 +10,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:home_widget/home_widget.dart';
 
+import 'components/home_widget/home_widget_service.dart';
 import 'data/models/recipe/recipe.dart';
 import 'data/providers/app_router_provider.dart';
 
@@ -31,6 +33,7 @@ Future<void> main() async {
   Hive.registerAdapter(MealTypeAdapter());
   Hive.registerAdapter(IntoleranceAdapter());
   Hive.registerAdapter(DietAdapter());
+  await HomeWidget.registerInteractivityCallback(interactiveCallback);
 
   await Firebase.initializeApp(
       //options: DefaultFirebaseOptions.currentPlatform,

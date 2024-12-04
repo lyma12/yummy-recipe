@@ -34,7 +34,7 @@ class _MainViewState extends BaseViewState<MainScreen, MainViewModel> {
     return AutoTabsScaffold(
       routes: const [
         HomeTabRoute(),
-        CalendarTabRoute(),
+        MealPlanTabRoute(),
         CreateTabRoute(),
         FavouriteTabRoute(),
         AccountTabRoute(),

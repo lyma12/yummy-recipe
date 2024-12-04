@@ -15,6 +15,8 @@ abstract class RecipeFirebaseStoreRepository {
   Stream<List<Recipe>> listenRecipesStream(int length);
 
   String getGenerationId();
+
+  Future<List<Recipe>>? getRecipes(String title);
 }
 
 class RecipeFirebaseStoreRepositoryImpl
@@ -67,5 +69,22 @@ class RecipeFirebaseStoreRepositoryImpl
     return query.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => doc.data() as FirebaseRecipe).toList();
     });
+  }
+
+  @override
+  Future<List<Recipe>>? getRecipes(String title) async {
+    Query query = documentRef.where('title', isEqualTo: title);
+    List<Recipe> response = [];
+    await query.get().then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          final FirebaseRecipe recipe = docSnapshot.data() as FirebaseRecipe;
+          response.add(recipe);
+        }
+      },
+      onError: (e) =>
+          FirebaseException(message: "Error completing: $e", plugin: ''),
+    );
+    return response;
   }
 }

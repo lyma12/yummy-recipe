@@ -28,15 +28,13 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     CalendarRoute.name: (routeData) {
+      final args = routeData.argsAs<CalendarRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const CalendarScreen(),
-      );
-    },
-    CalendarTabRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CalendarTabPage(),
+        child: CalendarScreen(
+          key: args.key,
+          user: args.user,
+        ),
       );
     },
     CreateRoute.name: (routeData) {
@@ -118,6 +116,18 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MainScreen(),
       );
     },
+    MealPlanRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MealPlanScreen(),
+      );
+    },
+    MealPlanTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MealPlanTabPage(),
+      );
+    },
     MenuRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -128,6 +138,12 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const MenuTabPage(),
+      );
+    },
+    NotificationRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const NotificationScreen(),
       );
     },
     ProfileSettingRoute.name: (routeData) {
@@ -169,6 +185,16 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const SettingPage(),
       );
     },
+    ShoppingListRoute.name: (routeData) {
+      final args = routeData.argsAs<ShoppingListRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ShoppingListScreen(
+          key: args.key,
+          user: args.user,
+        ),
+      );
+    },
     SplashRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -208,30 +234,40 @@ class AccountTabRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [CalendarScreen]
-class CalendarRoute extends PageRouteInfo<void> {
-  const CalendarRoute({List<PageRouteInfo>? children})
-      : super(
+class CalendarRoute extends PageRouteInfo<CalendarRouteArgs> {
+  CalendarRoute({
+    Key? key,
+    required SpoonacularAccount user,
+    List<PageRouteInfo>? children,
+  }) : super(
           CalendarRoute.name,
+          args: CalendarRouteArgs(
+            key: key,
+            user: user,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'CalendarRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<CalendarRouteArgs> page =
+      PageInfo<CalendarRouteArgs>(name);
 }
 
-/// generated route for
-/// [CalendarTabPage]
-class CalendarTabRoute extends PageRouteInfo<void> {
-  const CalendarTabRoute({List<PageRouteInfo>? children})
-      : super(
-          CalendarTabRoute.name,
-          initialChildren: children,
-        );
+class CalendarRouteArgs {
+  const CalendarRouteArgs({
+    this.key,
+    required this.user,
+  });
 
-  static const String name = 'CalendarTabRoute';
+  final Key? key;
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  final SpoonacularAccount user;
+
+  @override
+  String toString() {
+    return 'CalendarRouteArgs{key: $key, user: $user}';
+  }
 }
 
 /// generated route for
@@ -462,6 +498,34 @@ class MainRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MealPlanScreen]
+class MealPlanRoute extends PageRouteInfo<void> {
+  const MealPlanRoute({List<PageRouteInfo>? children})
+      : super(
+          MealPlanRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MealPlanRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MealPlanTabPage]
+class MealPlanTabRoute extends PageRouteInfo<void> {
+  const MealPlanTabRoute({List<PageRouteInfo>? children})
+      : super(
+          MealPlanTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MealPlanTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [MenuScreen]
 class MenuRoute extends PageRouteInfo<void> {
   const MenuRoute({List<PageRouteInfo>? children})
@@ -485,6 +549,20 @@ class MenuTabRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'MenuTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [NotificationScreen]
+class NotificationRoute extends PageRouteInfo<void> {
+  const NotificationRoute({List<PageRouteInfo>? children})
+      : super(
+          NotificationRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'NotificationRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -615,6 +693,44 @@ class SettingRoute extends PageRouteInfo<void> {
   static const String name = 'SettingRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ShoppingListScreen]
+class ShoppingListRoute extends PageRouteInfo<ShoppingListRouteArgs> {
+  ShoppingListRoute({
+    Key? key,
+    required SpoonacularAccount user,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ShoppingListRoute.name,
+          args: ShoppingListRouteArgs(
+            key: key,
+            user: user,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ShoppingListRoute';
+
+  static const PageInfo<ShoppingListRouteArgs> page =
+      PageInfo<ShoppingListRouteArgs>(name);
+}
+
+class ShoppingListRouteArgs {
+  const ShoppingListRouteArgs({
+    this.key,
+    required this.user,
+  });
+
+  final Key? key;
+
+  final SpoonacularAccount user;
+
+  @override
+  String toString() {
+    return 'ShoppingListRouteArgs{key: $key, user: $user}';
+  }
 }
 
 /// generated route for

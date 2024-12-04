@@ -4,7 +4,7 @@ import 'package:base_code_template_flutter/screens/create/create_screen.dart';
 import 'package:base_code_template_flutter/screens/first_time/first_time_screen.dart';
 import 'package:base_code_template_flutter/screens/login/login_screen.dart';
 import 'package:flutter/cupertino.dart';
-
+import '../data/models/user/spoonacular_account.dart';
 import '../screens/account/account_screen.dart';
 import '../screens/detail_recipe/firebase/detail_firebase_recipe_screen.dart';
 import '../screens/detail_recipe/spoonacular/detail_spoonacular_recipe_screen.dart';
@@ -12,11 +12,14 @@ import '../screens/favourite_recipe/favourite_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/main/main_screen.dart';
 import '../screens/menu/menu_screen.dart';
+import '../screens/meal_plan/calendar/calendar_screen.dart';
+import '../screens/meal_plan/meal_plan_screen.dart';
+import '../screens/meal_plan/shopping_list/shopping_list_screen.dart';
+import '../screens/notification/notification_screen.dart';
 import '../screens/scraping_data/scraping_data_screen.dart';
 import '../screens/setting/profile/profile_setting_screen.dart';
 import '../screens/setting/queries/queries_setting_screen.dart';
 import '../screens/splash/splash_screen.dart';
-import '../screens/video/calendar_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -71,13 +74,25 @@ class AppRouter extends _$AppRouter {
               ],
             ),
             AutoRoute(
-              page: CalendarTabRoute.page,
-              path: 'videoTab',
+              page: MealPlanTabRoute.page,
+              path: 'mealPlanTab',
               children: [
                 AutoRoute(
-                  page: CalendarRoute.page,
+                  page: MealPlanRoute.page,
                   path: '',
                 ),
+                AutoRoute(
+                  page: ScrapingDataRoute.page,
+                  path: 'scraping',
+                ),
+                AutoRoute(
+                  page: DetailFirebaseRecipeRoute.page,
+                  path: 'detail',
+                ),
+                AutoRoute(
+                  page: DetailSpoonacularRecipeRoute.page,
+                  path: 'detail',
+                )
                 // inspection child page define here
               ],
             ),
@@ -154,9 +169,10 @@ class HomeTabPage extends AutoRouter {
   const HomeTabPage({super.key});
 }
 
-@RoutePage(name: 'CalendarTabRoute')
-class CalendarTabPage extends AutoRouter {
-  const CalendarTabPage({super.key});
+
+@RoutePage(name: 'MealPlanTabRoute')
+class MealPlanTabPage extends AutoRouter {
+  const MealPlanTabPage({super.key});
 }
 
 @RoutePage(name: 'CreateTabRoute')
