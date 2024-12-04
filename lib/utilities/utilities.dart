@@ -1,11 +1,13 @@
+
 import 'dart:convert';
 import 'package:base_code_template_flutter/components/chart/pie_chart.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/nutrition/nutrients.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipe.dart';
 import 'package:base_code_template_flutter/data/models/api/responses/user_comment/recipe_comment.dart';
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
-import 'package:base_code_template_flutter/data/models/shopping_list/shopping_list.dart';
 import 'package:base_code_template_flutter/data/models/user/user_firebase_profile.dart';
+import 'package:base_code_template_flutter/utilities/constants/app_constants.dart';
+import 'package:base_code_template_flutter/data/models/shopping_list/shopping_list.dart';
 import 'package:base_code_template_flutter/utilities/constants/firebae_recipe_field_name.dart';
 import 'package:base_code_template_flutter/utilities/exceptions/email_exception.dart';
 import 'package:base_code_template_flutter/utilities/exceptions/password_exception.dart';
@@ -81,6 +83,7 @@ class Utilities {
     }
     return result;
   }
+
 
   static Map<String, dynamic> getUserPeopleLikeToFirebase(
       List<UserFirebaseProfile> peopleLike) {
@@ -222,6 +225,16 @@ class Utilities {
     return formattedName;
   }
 
+  static String getImageIngredient(String? image) {
+    if (image == null) {
+      return AppConstants.defaultImageIngredient;
+    }
+    if (image.contains(AppConstants.httpString)) {
+      return image;
+    } else {
+      return "${AppConstants.spoonacularUrlImageIngredient}$image";
+    }
+  }
   static Map<String, dynamic> converterShoppingListForFirebase(
       Map<String, Map<String, bool>> shoppingList) {
     return {FirebaseUserProfileFieldName.shoppingList: shoppingList};

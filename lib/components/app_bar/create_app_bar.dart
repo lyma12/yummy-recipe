@@ -9,6 +9,7 @@ class CreateAppBar extends StatelessWidget implements PreferredSizeWidget {
       required this.backgroundColor,
       required this.onSaveIconTap,
       required this.onAnalyzeIconTap,
+      required this.onScrapeDataTap,
       required this.isCanSave});
 
   final String title;
@@ -18,6 +19,7 @@ class CreateAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onSaveIconTap;
 
   final VoidCallback onAnalyzeIconTap;
+  final VoidCallback onScrapeDataTap;
 
   final bool isCanSave;
 
@@ -32,20 +34,38 @@ class CreateAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (isCanSave)
           Padding(
             padding: const EdgeInsets.all(4),
-            child: OutlinedButton(
-              onPressed: () {
-                onSaveIconTap();
-              },
-              child: Text(AppLocalizations.of(context)?.save ?? "Save"),
+            child: Tooltip(
+              message: AppLocalizations.of(context)?.create ?? "Create",
+              child: IconButton(
+                onPressed: () {
+                  onSaveIconTap();
+                },
+                icon: const Icon(Icons.upload_file),
+              ),
             ),
           ),
         Padding(
           padding: const EdgeInsets.all(8),
-          child: OutlinedButton(
-            onPressed: () {
-              onAnalyzeIconTap();
-            },
-            child: Text(AppLocalizations.of(context)?.analyze ?? "Analyze"),
+          child: Tooltip(
+            message: AppLocalizations.of(context)?.analyze ?? "Analyze",
+            child: IconButton(
+              onPressed: () {
+                onAnalyzeIconTap();
+              },
+              icon: const Icon(Icons.analytics_outlined),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Tooltip(
+            message: AppLocalizations.of(context)?.scrape ?? "Scrape data",
+            child: IconButton(
+              onPressed: () {
+                onScrapeDataTap();
+              },
+              icon: const Icon(Icons.web_sharp),
+            ),
           ),
         )
       ],

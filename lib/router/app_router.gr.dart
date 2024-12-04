@@ -38,9 +38,14 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     CreateRoute.name: (routeData) {
+      final args = routeData.argsAs<CreateRouteArgs>(
+          orElse: () => const CreateRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const CreateScreen(),
+        child: CreateScreen(
+          key: args.key,
+          recipe: args.recipe,
+        ),
       );
     },
     CreateTabRoute.name: (routeData) {
@@ -267,16 +272,39 @@ class CalendarRouteArgs {
 
 /// generated route for
 /// [CreateScreen]
-class CreateRoute extends PageRouteInfo<void> {
-  const CreateRoute({List<PageRouteInfo>? children})
-      : super(
+class CreateRoute extends PageRouteInfo<CreateRouteArgs> {
+  CreateRoute({
+    Key? key,
+    Recipe? recipe,
+    List<PageRouteInfo>? children,
+  }) : super(
           CreateRoute.name,
+          args: CreateRouteArgs(
+            key: key,
+            recipe: recipe,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'CreateRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<CreateRouteArgs> page = PageInfo<CreateRouteArgs>(name);
+}
+
+class CreateRouteArgs {
+  const CreateRouteArgs({
+    this.key,
+    this.recipe,
+  });
+
+  final Key? key;
+
+  final Recipe? recipe;
+
+  @override
+  String toString() {
+    return 'CreateRouteArgs{key: $key, recipe: $recipe}';
+  }
 }
 
 /// generated route for

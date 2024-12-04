@@ -14,26 +14,33 @@ import 'package:base_code_template_flutter/screens/create/component/ingredient_c
 import 'package:base_code_template_flutter/screens/create/component/result_analyze_recipe.dart';
 import 'package:base_code_template_flutter/screens/create/create_state.dart';
 import 'package:base_code_template_flutter/screens/create/create_view_model.dart';
+import 'package:base_code_template_flutter/utilities/utilities.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final _provider =
-    StateNotifierProvider.autoDispose<CreateViewModel, CreateState>(
-  (ref) => CreateViewModel(
-    ref: ref,
-    spoonacularRepository: ref.read(recipeSpoonacularRepositoryProvider),
-    sessionRepository: ref.read(sessionRepositoryProvider),
-    firebaseStorageRepository: ref.read(firebaseStorageRepositoryProvider),
-    firebaseStoreRespository: ref.read(recipeFirebaseRepositoryProvider),
-    authRepository: ref.watch(firebaseAuthRepositoryProvider),
-  ),
-);
+import '../../data/models/recipe/recipe.dart';
+
+final _provider = StateNotifierProvider
+    .autoDispose<CreateViewModel, CreateState>((ref) => CreateViewModel(
+          ref: ref,
+          spoonacularRepository: ref.read(recipeSpoonacularRepositoryProvider),
+          sessionRepository: ref.read(sessionRepositoryProvider),
+          firebaseStorageRepository:
+              ref.read(firebaseStorageRepositoryProvider),
+          firebaseStoreRespository: ref.read(recipeFirebaseRepositoryProvider),
+          authRepository: ref.watch(firebaseAuthRepositoryProvider),
+        ));
 
 @RoutePage()
 class CreateScreen extends BaseView {
-  const CreateScreen({super.key});
+  const CreateScreen({
+    super.key,
+    this.recipe,
+  });
+
+  final Recipe? recipe;
 
   @override
   BaseViewState<CreateScreen, CreateViewModel> createState() =>
@@ -46,12 +53,15 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
   bool _isClickIcon = false;
   final animationDuration = const Duration(milliseconds: 250);
   final opacityAnimationDuration = const Duration(milliseconds: 150);
+  late Recipe? initRecipe;
 
   @override
   Future<void> onInitState() async {
     super.onInitState();
-    await Future.delayed(Duration.zero, () async {
-      await viewModel.initData();
+    final recipe = widget.recipe;
+    initRecipe = recipe;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await viewModel.initData(recipe);
     });
   }
 
@@ -62,6 +72,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
         backgroundColor: backgroundColor,
         onSaveIconTap: _saveRecipeInFirebase,
         onAnalyzeIconTap: _getAnalyzeRecipe,
+        onScrapeDataTap: _scrapeRecipe,
         isCanSave: state.isUpload);
   }
 
@@ -81,6 +92,10 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
         await _showDialogResultAnalyze();
       }
     }
+  }
+
+  Future _scrapeRecipe() async {
+    AutoRouter.of(context).replace(ScrapingDataRoute());
   }
 
   Future<void> _showDialogResultAnalyze() async {
@@ -110,6 +125,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
           slivers: [
             SliverToBoxAdapter(
               child: ImageFromGalleryEx(
+                initialImageUrl: state.recipe?.image,
                 onSaved: (value) {
                   viewModel.saveImage(value);
                 },
@@ -233,8 +249,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
                     leading: CachedNetworkImage(
                         width: 40,
                         height: 40,
-                        imageUrl:
-                            "https://img.spoonacular.com/ingredients_100x100/${option?.image}"),
+                        imageUrl: Utilities.getImageIngredient(option?.image)),
                     title: Text(
                       option?.name ?? "",
                       style: AppTextStyles.bodySmall,
@@ -252,42 +267,48 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
   }
 
   Widget _listIngredient() {
-    return SliverList.builder(
-      itemBuilder: (context, index) {
-        return Dismissible(
-          key: Key(state.listIngredient?[index].name ?? index.toString()),
-          onDismissed: (direction) {
-            Ingredient? ingredientRemove = state.listIngredient?[index];
-            viewModel.removeIngredient(index);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Undo remove ingredient!'),
-                duration: const Duration(seconds: 2),
-                action: SnackBarAction(
-                  label: 'Undo',
-                  backgroundColor: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    if (ingredientRemove != null) {
-                      viewModel.undoRemoveIngredient(ingredientRemove, index);
-                    }
-                  },
+    final listIngredient = state.listIngredient;
+    return listIngredient != null
+        ? SliverList.builder(
+            itemBuilder: (context, index) {
+              return Dismissible(
+                key: Key(listIngredient[index].name ?? index.toString()),
+                onDismissed: (direction) {
+                  Ingredient? ingredientRemove = listIngredient[index];
+                  viewModel.removeIngredient(index);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Undo remove ingredient!'),
+                      duration: const Duration(seconds: 2),
+                      action: SnackBarAction(
+                        label: 'Undo',
+                        backgroundColor: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          viewModel.undoRemoveIngredient(
+                              ingredientRemove, index);
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                  child: IngredientCreateView(
+                    ingredient: listIngredient[index],
+                    onSubmit: (value) {
+                      viewModel.saveIngredient(value, index);
+                    },
+                  ),
                 ),
-              ),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-            child: IngredientCreateView(
-              ingredient: state.listIngredient![index],
-              onSubmit: (value) {
-                viewModel.saveIngredient(value, index);
-              },
-            ),
-          ),
-        );
-      },
-      itemCount: state.listIngredient?.length,
-    );
+              );
+            },
+            itemCount: state.listIngredient?.length,
+          )
+        : SliverToBoxAdapter(
+            child: Text(AppLocalizations.of(context)?.add_ingredient ??
+                "Add ingredient for recipe"),
+          );
   }
 
   Widget _textFormInstruction() {
@@ -297,7 +318,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              AppLocalizations.of(context)?.intructions ?? "Intructions",
+              AppLocalizations.of(context)?.intructions ?? "Instructions",
               style: AppTextStyles.titleMedium,
             ),
           ),
@@ -306,6 +327,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
             child: TextFormField(
               maxLines: 500,
               minLines: 2,
+              initialValue: initRecipe?.instructions,
               style: AppTextStyles.bodyMedium,
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context)?.intructions,
@@ -336,6 +358,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
       child: Column(
         children: [
           TextFormField(
+            initialValue: initRecipe?.title,
             style: AppTextStyles.bodyMedium,
             decoration: InputDecoration(
               hintText: AppLocalizations.of(context)?.title_recipe,
@@ -362,6 +385,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
           TextFormField(
             maxLines: 3,
             minLines: 2,
+            initialValue: initRecipe?.summary,
             style: AppTextStyles.bodyMedium,
             decoration: InputDecoration(
               hintText: AppLocalizations.of(context)?.sumary_recipe,
@@ -389,7 +413,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
                 ),
                 Expanded(
                   child: TextFormField(
-                    initialValue: "1",
+                    initialValue: initRecipe?.servings.toString() ?? "1",
                     keyboardType: TextInputType.number,
                     style: AppTextStyles.bodyMedium,
                     decoration: InputDecoration(
@@ -425,7 +449,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
                 ),
                 Expanded(
                   child: TextFormField(
-                    initialValue: "30",
+                    initialValue: initRecipe?.readyInMinutes.toString() ?? "30",
                     keyboardType: TextInputType.number,
                     style: AppTextStyles.bodyMedium,
                     decoration: InputDecoration(
@@ -461,7 +485,7 @@ class _CreateViewState extends BaseViewState<CreateScreen, CreateViewModel> {
                 ),
                 Expanded(
                   child: TextFormField(
-                    initialValue: "30",
+                    initialValue: initRecipe?.cookingMinutes.toString() ?? "30",
                     keyboardType: TextInputType.number,
                     style: AppTextStyles.bodyMedium,
                     decoration: InputDecoration(

@@ -15,9 +15,11 @@ class ImageFromGalleryEx extends StatefulWidget {
   const ImageFromGalleryEx({
     super.key,
     required this.onSaved,
+    this.initialImageUrl,
   });
 
   final void Function(File? data) onSaved;
+  final String? initialImageUrl;
 
   @override
   State<StatefulWidget> createState() => _ImageFromGalleryExState();
@@ -73,28 +75,32 @@ class _ImageFromGalleryExState extends State<ImageFromGalleryEx> {
                     margin: const EdgeInsets.all(20),
                     child: _image != null
                         ? Image.file(_image!)
-                        : AppRichText.richTextTextIconTextIcon(
-                            mainText: AppLocalizations.of(context)?.take_photo,
-                            firstIcon: IconButton(
-                              onPressed: () async {
-                                setState(() {
-                                  type = ImageSourceType.camera;
-                                });
-                                await takeImage();
-                              },
-                              icon: const Icon(Icons.camera_alt),
-                            ),
-                            textBetween: ' or ',
-                            secondIcon: IconButton(
-                              onPressed: () async {
-                                setState(() {
-                                  type = ImageSourceType.gallery;
-                                });
-                                await takeImage();
-                              },
-                              icon: const Icon(Icons.folder),
-                            ),
-                          ),
+                        : widget.initialImageUrl != null &&
+                                widget.initialImageUrl!.isNotEmpty
+                            ? Image.network(widget.initialImageUrl!)
+                            : AppRichText.richTextTextIconTextIcon(
+                                mainText:
+                                    AppLocalizations.of(context)?.take_photo,
+                                firstIcon: IconButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      type = ImageSourceType.camera;
+                                    });
+                                    await takeImage();
+                                  },
+                                  icon: const Icon(Icons.camera_alt),
+                                ),
+                                textBetween: ' or ',
+                                secondIcon: IconButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      type = ImageSourceType.gallery;
+                                    });
+                                    await takeImage();
+                                  },
+                                  icon: const Icon(Icons.folder),
+                                ),
+                              ),
                   ),
                 ),
                 Positioned(
@@ -102,7 +108,6 @@ class _ImageFromGalleryExState extends State<ImageFromGalleryEx> {
                   top: 0,
                   child: IconButton(
                     onPressed: () {
-                      // clear image
                       setState(() {
                         _image = null;
                       });

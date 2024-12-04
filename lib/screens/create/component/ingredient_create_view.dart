@@ -1,5 +1,6 @@
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipe.dart';
 import 'package:base_code_template_flutter/resources/app_text_styles.dart';
+import 'package:base_code_template_flutter/utilities/utilities.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -111,7 +112,7 @@ class _IngredientCreateViewState extends State<IngredientCreateView> {
                   height: 40,
                   width: 40,
                   imageUrl:
-                      "https://img.spoonacular.com/ingredients_100x100/${widget.ingredient.image!}",
+                      Utilities.getImageIngredient(widget.ingredient.image),
                   fit: BoxFit.fill,
                 ),
               const SizedBox(

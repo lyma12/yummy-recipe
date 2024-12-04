@@ -22,8 +22,8 @@ class _WebViewContainerState extends State<WebViewContainer> {
 
   @override
   void initState() {
-    onUrlChanged = widget.onUrlChanged ?? (_) {};
     super.initState();
+    onUrlChanged = widget.onUrlChanged ?? (_) {};
     controller = WebViewController()
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (url) {
@@ -62,7 +62,10 @@ class _WebViewContainerState extends State<WebViewContainer> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 6,
+      ),
       child: Stack(
         children: [
           WebViewWidget(controller: controller),

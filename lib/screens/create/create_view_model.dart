@@ -4,10 +4,12 @@ import 'package:base_code_template_flutter/components/base_view/base_view_model.
 import 'package:base_code_template_flutter/data/models/api/responses/spooncular/recipe.dart';
 import 'package:base_code_template_flutter/data/models/recipe/recipe.dart';
 import 'package:base_code_template_flutter/data/models/user/user_firebase_profile.dart';
+import 'package:base_code_template_flutter/data/providers/scrape_data_provider.dart';
 import 'package:base_code_template_flutter/data/repositories/api/session/session_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/api/spoonacular/spoonacular_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/firebase/firebase_storage_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/firebase/recipe_firebase_store_repository.dart';
+import 'package:base_code_template_flutter/data/repositories/scraping/scrape_data_repository.dart';
 import 'package:base_code_template_flutter/data/repositories/signin/signin_repository.dart';
 import 'package:base_code_template_flutter/screens/create/create_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,11 +29,14 @@ class CreateViewModel extends BaseViewModel<CreateState> {
   final FirebaseStorageRepository firebaseStorageRepository;
   final RecipeFirebaseStoreRepository firebaseStoreRespository;
   final AuthRepository authRepository;
+
+  ScrapeDataRepository get scrapeDataRepository =>
+      ref.read(scrapeDataRecipeInWebProvider);
   String _historySearch = "";
 
-  Future<void> initData() async {
+  Future<void> initData(Recipe? recipe) async {
     await Future.wait([
-      _initRecipe(),
+      _initRecipe(recipe),
     ]);
   }
 
@@ -92,23 +97,27 @@ class CreateViewModel extends BaseViewModel<CreateState> {
 
   Future<void> uploadRecipe() async {
     final recipeData = state.recipe;
-    if (recipeData != null &&
-        state.imageData != null &&
-        recipeData is FirebaseRecipe) {
-      state = state.copyWith(
+    if (recipeData != null && recipeData is FirebaseRecipe) {
+      if (recipeData.image != null) {
+        state = state.copyWith(
           recipe: recipeData.copyWith(
-        extendedIngredients: state.listIngredient ?? [],
-      ));
-      final url = await firebaseStorageRepository.saveRecipe(
-          recipeData.id, state.imageData);
-      final recipe = recipeData.copyWith(
-        image: url,
-        user: authRepository.getUserProfile(),
-        createAt: DateTime.now(),
-      );
-      await firebaseStoreRespository.saveRecipePost(recipe).then((onValue) {
-        resetData();
-      });
+            extendedIngredients: state.listIngredient ?? [],
+          ),
+        );
+        String? url = recipeData.image;
+        if (state.imageData != null) {
+          url = await firebaseStorageRepository.saveRecipe(
+              recipeData.id, state.imageData);
+        }
+        final recipe = recipeData.copyWith(
+          image: url,
+          user: authRepository.getUserProfile(),
+          createAt: DateTime.now(),
+        );
+        await firebaseStoreRespository.saveRecipePost(recipe).then((onValue) {
+          resetData();
+        });
+      }
     }
   }
 
@@ -135,19 +144,31 @@ class CreateViewModel extends BaseViewModel<CreateState> {
         extendedIngredients: state.listIngredient ?? [],
       ),
     );
-
     state = state.copyWith(
       recipe: response,
       isUpload: true,
     );
   }
 
-  Future<void> _initRecipe() async {
+  Future<void> _initRecipe(Recipe? initRecipe) async {
     final id = firebaseStoreRespository.getGenerationId();
     UserFirebaseProfile userProfile = authRepository.getUserProfile();
     state = state.copyWith(
-      recipe:
-          FirebaseRecipe(id: id, user: userProfile, like: 0, peopleLike: []),
+      recipe: FirebaseRecipe(
+        id: id,
+        user: userProfile,
+        like: 0,
+        peopleLike: [],
+        summary: initRecipe?.summary,
+        instructions: initRecipe?.instructions,
+        title: initRecipe?.title,
+        image: initRecipe?.image,
+        servings: initRecipe?.servings ?? 1,
+        readyInMinutes: initRecipe?.readyInMinutes,
+        cookingMinutes: initRecipe?.cookingMinutes,
+        extendedIngredients: initRecipe?.extendedIngredients ?? [],
+      ),
+      listIngredient: initRecipe?.extendedIngredients,
       createRecipe: false,
       isUpload: false,
     );
@@ -200,4 +221,6 @@ class CreateViewModel extends BaseViewModel<CreateState> {
       imageData: image,
     );
   }
+
+  Future scrapeData(int recipeNumber) async {}
 }

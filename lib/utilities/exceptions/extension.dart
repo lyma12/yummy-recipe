@@ -1,10 +1,8 @@
 import 'dart:core';
-
 import 'package:base_code_template_flutter/data/models/user/user_firebase_profile.dart';
+import '../../data/models/api/responses/spooncular/recipe.dart';
 import 'package:base_code_template_flutter/utilities/constants/app_constants.dart';
 import 'package:flutter/material.dart';
-
-import '../../data/models/api/responses/spooncular/recipe.dart';
 import '../../data/models/meal_plan/meal_plan.dart';
 import '../../data/models/queries/queries.dart';
 import '../../data/models/recipe/recipe.dart';

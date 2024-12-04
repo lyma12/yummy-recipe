@@ -1,27 +1,27 @@
 import 'package:base_code_template_flutter/components/base_view/base_view_model.dart';
-import 'package:base_code_template_flutter/data/repositories/scraping_data/scraping_data_repository.dart';
+import 'package:base_code_template_flutter/data/providers/scrape_data_provider.dart';
+import 'package:base_code_template_flutter/data/repositories/scraping/scrape_data_repository.dart';
 import 'package:base_code_template_flutter/screens/scraping_data/scraping_data_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../data/models/recipe/recipe.dart';
 
 class ScrapingDataViewModel extends BaseViewModel<ScrapingDataState> {
   ScrapingDataViewModel({
     required this.ref,
-    required this.scrapingDataRepository,
   }) : super(const ScrapingDataState());
   final Ref ref;
-  final ScrapingDataRepository scrapingDataRepository;
+
+  ScrapeDataRepository get scrapingDataRepository =>
+      ref.read(scrapeDataRecipeInWebProvider);
 
   Future changeUrl(String url) async {
-    final canScrape = await scrapingDataRepository.canScrapeData(url);
+    final canScrape = scrapingDataRepository.canScrape(url);
     state = state.copyWith(
-      url: url,
       canScraping: canScrape,
+      url: url,
     );
   }
 
-  Future<List<Recipe>> scrapeDataRecipe() async {
-    return await scrapingDataRepository.scrapeData(state.url);
+  Future scrapeRecipe() async {
+    return scrapingDataRepository.getRecipeFromURLWeb(state.url);
   }
 }
